@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>FC 26 — Guide Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0e10;--bg2:#16161a;--bg3:#1f1f25;
+  --border:#2a2a32;--border2:#38383f;
+  --text:#f0f0f4;--text2:#9090a0;--text3:#5a5a6a;
+  --green:#1db974;--green2:#158f56;--gdim:rgba(29,185,116,.12);
+  --red:#e8454a;--rdim:rgba(232,69,74,.12);
+  --gold:#f5c842;--oddim:rgba(245,200,66,.14);
+  --blue:#4a90e2;--bdim:rgba(74,144,226,.12);
+  --purple:#7f77dd;--pdim:rgba(127,119,221,.13);
+  --radius:10px;--radius2:16px;
+  --fh:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
+  --fs:'Oswald',var(--fh);--fd:'Bebas Neue',var(--fh);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* LAYOUT */
+.wrap{max-width:860px;margin:0 auto;padding:0 14px 80px}
+.hdr{display:flex;align-items:center;gap:10px;padding:16px 0 14px;border-bottom:1px solid var(--border);margin-bottom:18px;position:sticky;top:0;background:var(--bg);z-index:200}
+.hdr-logo{width:34px;height:34px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.hdr-title{font-family:var(--fd);font-size:22px;letter-spacing:.04em}
+.hdr-title span{color:var(--green)}
+.back{margin-left:auto;font-size:12px;color:var(--text2);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:20px;transition:all .15s}
+.back:hover{color:var(--text);border-color:var(--border2)}
+
+/* CAT NAV */
+.catnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.catbtn{font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:.04em;padding:7px 15px;border-radius:20px;border:1px solid transparent;cursor:pointer;background:var(--bg3);color:var(--text2);transition:all .2s;white-space:nowrap}
+.catbtn:hover{color:var(--text)}
+.catbtn.on{color:#fff}
+.catbtn[data-c="tirs"].on{background:var(--red);border-color:var(--red)}
+.catbtn[data-c="defense"].on{background:var(--blue);border-color:var(--blue)}
+.catbtn[data-c="passes"].on{background:var(--gold);border-color:var(--gold);color:#000}
+.catbtn[data-c="skills"].on{background:var(--purple);border-color:var(--purple)}
+.catbtn[data-c="avance"].on{background:linear-gradient(135deg,#7f77dd,#4a90e2);border-color:var(--purple)}
+
+/* SECTIONS */
+.sec{display:none}.sec.on{display:block}
+
+/* INNER TABS */
+.itabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap}
+.itab{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.04em;padding:5px 12px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;background:var(--bg3);color:var(--text2);transition:all .15s;white-space:nowrap}
+.itab.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+.ipanel{display:none}.ipanel.on{display:block}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:16px 18px;margin-bottom:12px}
+.ctitle{font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.t-must{background:var(--gdim);color:var(--green);border:1px solid var(--green)}
+.t-op{background:var(--rdim);color:var(--red);border:1px solid var(--red)}
+.t-elite{background:#2d1f5e;color:#c8c2f5;border:1px solid var(--purple)}
+.t-meta{background:var(--oddim);color:var(--gold);border:1px solid var(--gold)}
+.t-stars{background:var(--bg3);color:var(--text2);border:1px solid var(--border2)}
+
+/* STEP */
+.step{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.sn{width:22px;height:22px;border-radius:50%;background:var(--pdim);color:var(--purple);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;border:1px solid var(--purple)}
+.sb{flex:1}
+.sa{font-size:13px;font-weight:600;color:var(--text)}
+.sd{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.6}
+
+/* BTN BADGES */
+.btns{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.b{display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:11px;font-weight:600;min-width:28px;height:22px;padding:0 8px;white-space:nowrap}
+.bx{background:#3b5ba5;color:#fff}.bo{background:#b0293c;color:#fff}
+.bt{background:#1e7a6a;color:#fff}.bs{background:#7a4cb0;color:#fff}
+.bl1{background:#3c3489;color:#eeedfe}.bl2{background:#444441;color:#f1efe8}
+.br1{background:#0f6e56;color:#e1f5ee}.br2{background:#ba7517;color:#faeeda}
+.bls{background:#0c447c;color:#e6f1fb}.brs{background:#6b3fa0;color:#fff}
+.barr{color:var(--text3);font-size:10px;padding:0 2px}
+
+/* INFO BOXES */
+.warn{background:rgba(245,200,66,.07);border-left:3px solid var(--gold);border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px;font-size:12px;color:#c8a830;margin-top:10px;line-height:1.6}
+.good{background:var(--gdim);border-left:3px solid var(--green);border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px;font-size:12px;color:var(--green);margin-top:10px;line-height:1.6}
+.secret{background:var(--pdim);border-left:3px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px;font-size:12px;color:#c8c2f5;margin-top:10px;line-height:1.7}
+.secret b{color:#fff;font-weight:700}
+.redbox{background:var(--rdim);border-left:3px solid var(--red);border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px;font-size:12px;color:var(--red);margin-top:10px;line-height:1.6}
+
+/* POWER BAR */
+.prow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.prow:last-child{border-bottom:none}
+.plbl{font-size:12px;font-weight:600;color:var(--text);width:100px;flex-shrink:0}
+.pbwrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.pb{height:100%;border-radius:4px}
+.pres{font-size:11px;color:var(--text2);width:160px;flex-shrink:0}
+
+/* COLLAPSIBLE SIT CARD */
+.sitcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px 16px;cursor:pointer;transition:border-color .15s;margin-bottom:10px}
+.sitcard.on{border-color:var(--purple)}
+.sithdr{display:flex;align-items:center;gap:10px}
+.sitico{font-size:20px;flex-shrink:0}
+.sitinfo{flex:1}
+.sittitle{font-size:14px;font-weight:600;color:var(--text)}
+.sitsub{font-size:12px;color:var(--text2);margin-top:2px}
+.sitdiff{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
+.ddot{width:8px;height:8px;border-radius:50%}
+.sitbody{display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+.sitcard.on .sitbody{display:block}
+.wrong{background:var(--rdim);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--red)}
+.wrongt{font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px}
+.wrongd{font-size:12px;color:#f08080;line-height:1.5}
+.right{background:var(--gdim);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--green)}
+.rightt{font-size:11px;font-weight:700;color:var(--green);margin-bottom:7px}
+.rightstep{display:flex;gap:7px;margin-bottom:5px;align-items:flex-start}
+.rsn{width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rstxt{font-size:12px;color:#90e8bf;line-height:1.5}
+.golden{background:rgba(245,200,66,.07);border-radius:var(--radius);padding:9px 12px;border-left:3px solid var(--gold)}
+.goldent{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px}
+.goldend{font-size:12px;color:#c8a830;line-height:1.5;font-weight:500}
+
+/* MOVE CARD */
+.movecard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.movecard.on{border-color:var(--purple)}
+.movecard:hover{border-color:var(--border2)}
+.movehdr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.movestars{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+.movename{font-size:14px;font-weight:600;color:var(--text);flex:1;min-width:100px}
+.movetype{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.ty-hold{background:var(--gdim);color:var(--green)}
+.ty-roll{background:var(--bdim);color:var(--blue)}
+.ty-flick{background:var(--pdim);color:var(--purple)}
+.ty-press{background:var(--oddim);color:var(--gold)}
+.movedesc{font-size:12px;color:var(--text2);margin-top:4px}
+.movebody{display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.movecard.on .movebody{display:block}
+.mini-box{border-radius:var(--radius);padding:8px 10px;margin-bottom:8px}
+.mini-lbl{font-size:11px;font-weight:700;margin-bottom:4px}
+
+/* CTRL ROW */
+.ctrlrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.ctrlrow:last-child{border-bottom:none}
+.ctrlbtn{background:var(--bg3);border-radius:var(--radius);padding:6px 10px;min-width:90px;text-align:center;font-size:12px;font-weight:600;color:var(--text);flex-shrink:0;border:1px solid var(--border2)}
+.ctrlbody{flex:1}
+.ctrln{font-size:13px;font-weight:600;color:var(--text)}
+.ctrld{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4}
+.esse{font-size:9px;font-weight:700;background:var(--gdim);color:var(--green);border:1px solid var(--green);padding:1px 6px;border-radius:8px;margin-left:5px}
+.risky{font-size:9px;font-weight:700;background:var(--rdim);color:var(--red);border:1px solid var(--red);padding:1px 6px;border-radius:8px;margin-left:5px}
+
+/* RULE */
+.rulecard{display:flex;gap:14px;background:var(--bg3);border-radius:var(--radius2);padding:16px;margin-bottom:10px;align-items:flex-start}
+.rulen{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:22px;flex-shrink:0}
+.rulet{font-size:14px;font-weight:700;margin-bottom:5px}
+.ruled{font-size:12px;line-height:1.7}
+
+/* COMBO */
+.combo{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);padding:14px 16px;margin-bottom:10px}
+.combon{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:.02em}
+.combosteps{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.cs{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:var(--radius)}
+.cs.final{background:var(--gdim)}
+.csn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff}
+.csa{font-size:13px;font-weight:600;color:var(--text)}
+.csw{font-size:11px;color:var(--text2);margin-top:1px}
+.combotip{background:rgba(245,200,66,.07);border-radius:var(--radius);padding:8px 10px;font-size:12px;color:#c8a830;border-left:3px solid var(--gold)}
+
+/* JOYSTICK GRID */
+.jsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:12px 0;max-width:300px}
+.jscell{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:8px;text-align:center}
+.jscell.hl{background:rgba(127,119,221,.1);border-color:var(--purple)}
+.jscell.op{background:rgba(29,185,116,.08);border-color:var(--green)}
+.jscell.ctr{border:2px solid var(--purple);border-radius:50%}
+.jsarrow{font-size:18px;display:block;margin-bottom:3px}
+.jslabel{font-size:10px;font-weight:700;color:var(--text)}
+.jsuse{font-size:9px;color:var(--text3);margin-top:2px;line-height:1.3}
+
+/* PLAN */
+.planstep{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.planstep:last-child{border-bottom:none}
+.plann{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;font-family:var(--fh);flex-shrink:0}
+.plant{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.pland{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* DIFF GRID */
+.diffgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dc{border-radius:var(--radius);padding:12px}
+.dcbad{background:var(--rdim);border:1px solid rgba(232,69,74,.25)}
+.dcgood{background:var(--gdim);border:1px solid rgba(29,185,116,.25)}
+.dct{font-size:12px;font-weight:700;margin-bottom:7px}
+.dci{font-size:11px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5}
+.dci:last-child{border:none}
+
+/* FILTER BTNS */
+.filters{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.filt{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s}
+.filt.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.filt:hover{color:var(--text)}
+
+@media(max-width:540px){
+  .jsgrid{max-width:100%}.diffgrid{grid-template-columns:1fr}
+  table th,table td{padding:6px 3px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hdr">
+  <div class="hdr-logo">⚽</div>
+  <div class="hdr-title">FC 26 <span>GUIDE PRO</span></div>
+  <a href="index.html" class="back">← Compétitions</a>
+</div>
+<div class="catnav">
+  <button class="catbtn on" data-c="tirs" onclick="showCat('tirs',this)">🎯 Tirs</button>
+  <button class="catbtn" data-c="defense" onclick="showCat('defense',this)">🛡 Défense</button>
+  <button class="catbtn" data-c="passes" onclick="showCat('passes',this)">📐 Passes</button>
+  <button class="catbtn" data-c="skills" onclick="showCat('skills',this)">💫 Skill Moves</button>
+  <button class="catbtn" data-c="avance" onclick="showCat('avance',this)">⚡ Niveau Élite</button>
+</div>
+<!-- ======= TIRS ======= -->
+<div id="sec-tirs" class="sec on">
+<div class="itabs">
+  <button class="itab on" onclick="showI('tirs','types',this)">Types</button>
+  <button class="itab" onclick="showI('tirs','puissance',this)">Puissance</button>
+  <button class="itab" onclick="showI('tirs','position',this)">Position</button>
+  <button class="itab" onclick="showI('tirs','gardien',this)">Face au gardien</button>
+  <button class="itab" onclick="showI('tirs','combos',this)">Combos</button>
+</div>
+
+<!-- Types -->
+<div id="tirs-types" class="ipanel on">
+<div class="card">
+  <div class="ctitle">Tir en finesse (R1+●) <span class="tag t-must">LE PLUS EFFICACE</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Diagonale → enrouler vers le coin OPPOSÉ</div><div class="sd">Tu arrives de gauche → L vers → ou ↗ + R1 + ●. Coin éloigné. Tu arrives de droite → L ← + R1 + ●. Toujours le coin qui est loin de ta trajectoire.</div><div class="btns"><span class="b bls">L coin éloigné</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/2 barre</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Passe à R1 avant de tirer</div><div class="sd">Sprint R2 + tir = imprécis. Relâche R2, maintiens R1 une seconde. Ton joueur est stable, le tir est précis. En surface : toujours R1.</div><div class="btns"><span class="b br2">R2 lâché</span><span class="barr">→</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bls">L coin</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Puissance : 1/2 barre maximum</div><div class="sd">La finesse n'a pas besoin de puissance. Trop = le ballon sort trop large. 1/2 barre, pas plus.</div></div></div>
+  <div class="good">Règle d'or : arrivée de gauche = poteau droit. Arrivée de droite = poteau gauche. Toujours le coin OPPOSÉ à ta trajectoire.</div>
+</div>
+<div class="card">
+  <div class="ctitle">Tir bas (●+●) <span class="tag t-must">TRÈS EFFICACE</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Charge ● à 2/3 barre → 2e appui ● juste avant de relâcher</div><div class="sd">Le 2e appui transforme le tir en tir ras du sol. Les gardiens plongent souvent trop haut — le tir bas passe sous leurs mains.</div><div class="btns"><span class="b bls">L ← ou →</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">2e appui</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Vise les coins bas — presque imparable</div><div class="sd">De face, L ← pour coin gauche bas, L → pour coin droit bas. Le gardien doit plonger complètement au sol.</div></div></div>
+</div>
+<div class="card">
+  <div class="ctitle">Tir lobé — chip (L1+●) <span class="tag t-stars">Situationnel</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Condition absolue : gardien sorti à 5m+ de sa ligne</div><div class="sd">Tu le vois avancer vers toi. C'est le seul moment où le chip fonctionne. S'il est entre les poteaux, le chip part au-dessus de la barre.</div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">L ↑ + L1 + ● à 1/3 barre</div><div class="sd">Droit vers le centre du but. Pas besoin de viser un côté. Très peu de puissance — sinon ça passe au-dessus.</div><div class="btns"><span class="b bls">L ↑</span><span class="barr">+</span><span class="b bl1">L1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/3 barre max</span></div></div></div>
+  <div class="warn">⚠ Ne jamais chiper si un défenseur est derrière toi ou si le gardien est sur sa ligne.</div>
+</div>
+<div class="card">
+  <div class="ctitle">Power Shot (L1+R1+●) <span class="tag t-stars">De loin uniquement</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Depuis 22m+ avec de l'espace autour de toi</div><div class="sd">L ↖ ou ↗ + L1 + R1 + ● à 3/4 barre. La caméra zoome. Prend du temps à exécuter — un défenseur à &lt;3m bloque avant que tu tires.</div><div class="btns"><span class="b bls">L ↖ ou ↗</span><span class="barr">+</span><span class="b bl1">L1</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">3/4 barre</span></div></div></div>
+  <div class="warn">⚠ Jamais dans la surface — trop lent. Dans la surface, utilise finesse ou tir bas.</div>
+</div>
+</div><!-- tirs-types -->
+
+<!-- Puissance -->
+<div id="tirs-puissance" class="ipanel">
+<div class="card">
+  <div class="ctitle">Les 5 niveaux de puissance</div>
+  <div class="prow"><div class="plbl">1/3 (faible)</div><div class="pbwrap"><div class="pb" style="width:33%;background:var(--green)"></div></div><div class="pres">Chip L1+● uniquement</div></div>
+  <div class="prow"><div class="plbl">1/2 (moyen)</div><div class="pbwrap"><div class="pb" style="width:50%;background:var(--green)"></div></div><div class="pres">Finesse R1+● — idéal surface</div></div>
+  <div class="prow"><div class="plbl">2/3 (fort)</div><div class="pbwrap"><div class="pb" style="width:66%;background:var(--gold)"></div></div><div class="pres">Tir normal + tir bas</div></div>
+  <div class="prow"><div class="plbl">3/4 (très fort)</div><div class="pbwrap"><div class="pb" style="width:75%;background:var(--gold)"></div></div><div class="pres">Power shot depuis 22m+</div></div>
+  <div class="prow"><div class="plbl">Barre pleine</div><div class="pbwrap"><div class="pb" style="width:100%;background:var(--red)"></div></div><div class="pres">⚠ Souvent en tribune</div></div>
+  <div class="good">Mémorise : finesse = 1/2 · tir normal = 2/3 · power shot = 3/4 · chip = 1/3. Ne dépasse JAMAIS la barre pleine.</div>
+</div>
+<div class="card">
+  <div class="ctitle">Puissance selon la distance</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Dans la surface (&lt;16m) — finesse ou tir bas</div><div class="sd">1/2 barre suffit. Tu es proche, la précision prime. R1+● ou ●+●.</div><div class="btns"><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/2 barre</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Entrée de surface (16-20m) — zone idéale</div><div class="sd">2/3 barre. Tous les types de tir fonctionnent. Bon angle, bonne distance.</div><div class="btns"><span class="b bo">●</span><span class="barr">2/3 barre ou</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Loin (&gt;20m) — power shot</div><div class="sd">3/4 barre minimum sinon le gardien a le temps de se préparer.</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">3/4 barre</span></div></div></div>
+</div>
+</div><!-- tirs-puissance -->
+
+<!-- Position -->
+<div id="tirs-position" class="ipanel">
+<div class="card">
+  <div class="ctitle">Diagonale de gauche (tu cours ↗ vers le but)</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Finesse vers le coin droit éloigné</div><div class="sd">L → ou ↗ + R1 + ●. Coin droit du gardien. Il est souvent côté gauche car tu arrives de gauche — tu le prends à contre-pied.</div><div class="btns"><span class="b bls">L → ou ↗</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Si défenseur bloque : rentrer dans l'axe</div><div class="sd">L ← pour rentrer dans l'axe, puis R1+●. Moins de précision mais l'angle est meilleur.</div><div class="btns"><span class="b bls">L ←</span><span class="barr">(axe)</span><span class="barr">→</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+</div>
+<div class="card">
+  <div class="ctitle">Dans l'axe, face au but</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Tir bas dans un coin — meilleur choix de face</div><div class="sd">L ← (coin gauche bas) ou → (coin droit bas) + ●+●. De face, le tir bas est le plus difficile à arrêter.</div><div class="btns"><span class="b bls">L ← ou →</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Alternative : finesse coin haut</div><div class="sd">L ↖ ou ↗ + R1 + ●. Le gardien peut plonger mais difficile à atteindre.</div><div class="btns"><span class="b bls">L ↖ ou ↗</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="warn">⚠ Ne jamais laisser L ↑ droit de face — le gardien est centré, il arrête 3/4 du temps. Décale TOUJOURS vers un coin.</div>
+</div>
+<div class="card">
+  <div class="ctitle">Réception dos au but</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">L1 + L ↓ dès la réception (bouclier)</div><div class="sd">Le défenseur dans ton dos ne peut pas tacler. Tu gagnes 1 à 2 secondes.</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b bls">L ↓</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">L neutre + L2 pour pivoter face au but</div><div class="sd">Relâche L1. L neutre + L2. Ton joueur tourne vers le but. Le défenseur est encore derrière.</div><div class="btns"><span class="b bls">L neutre</span><span class="barr">+</span><span class="b bl2">L2</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">R1 + L coin + ● immédiatement</div><div class="sd">Enchaîne sans hésiter — la fenêtre dure 1 seconde avant que le défenseur se replace.</div><div class="btns"><span class="b br1">R1</span><span class="barr">+</span><span class="b bls">L coin</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/2 barre</span></div></div></div>
+</div>
+</div><!-- tirs-position -->
+
+<!-- Face au gardien -->
+<div id="tirs-gardien" class="ipanel">
+<div class="card">
+  <div class="ctitle">Seul face au gardien (1v1) — le processus exact</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">R2 → R1 immédiatement dès que tu le vois</div><div class="sd">Sprint R2 = mauvaise précision. Relâche R2, maintiens R1. Tu gardes de la vitesse mais tu contrôles mieux.</div><div class="btns"><span class="b br2">R2 lâché</span><span class="barr">→</span><span class="b br1">R1</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Option A — Finesse coin opposé (le plus fiable)</div><div class="sd">Regarde où est le gardien. L vers le coin opposé + R1 + ● à 1/2 barre. Ce combo marque 8 fois sur 10.</div><div class="btns"><span class="b bls">L coin opposé</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/2 barre</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Option B — Chip si le gardien sprinte vers toi</div><div class="sd">Il sort très vite ? L ↑ + L1 + ● à 1/3 barre. Passe par-dessus lui.</div><div class="btns"><span class="b bls">L ↑</span><span class="barr">+</span><span class="b bl1">L1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/3 barre</span></div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Option C — Feinte + tir (gardien agressif)</div><div class="sd">● feinte → il plonge → ✕ + L pour partir d'un côté → R1+● dans le but vide.</div><div class="btns"><span class="b bo">●</span><span class="barr">feinte →</span><span class="b bx">✕</span><span class="barr">+</span><span class="b bls">L côté</span><span class="barr">→</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="secret"><b>Le 1v1 parfait :</b> R1 → regarder le gardien → L coin opposé → R1+● 1/2 barre. Répète ça jusqu'à ce que ce soit automatique.</div>
+</div>
+<div class="card">
+  <div class="ctitle">Gardien qui sort (avance vers toi)</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Il sort lentement → chip (L1+●)</div><div class="sd">L ↑ + L1 + ● à 1/3 barre. Ballon par-dessus lui, retombe dans le but vide.</div><div class="btns"><span class="b bls">L ↑</span><span class="barr">+</span><span class="b bl1">L1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">1/3 barre</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Il sort vite → contourne-le</div><div class="sd">R2 + L ← ou → pour le contourner, puis ● dans le but vide. Ou finesse dans le coin opposé à sa course.</div><div class="btns"><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L ← ou →</span><span class="barr">(contourner)</span><span class="barr">→</span><span class="b bo">●</span></div></div></div>
+</div>
+</div><!-- tirs-gardien -->
+
+<!-- Combos tirs -->
+<div id="tirs-combos" class="ipanel">
+<div class="combo">
+  <div class="combon">Combo 1 — Rentrer dans l'axe + finesse <span class="tag t-must" style="margin-left:6px">Le plus utilisé</span></div>
+  <div class="combosteps">
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">1</div><div><div class="csa">R2 + L → (ailier gauche sprint vers l'axe)</div><div class="csw">Attire le latéral vers l'extérieur</div></div></div>
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">2</div><div><div class="csa">Passe à R1 à 20m du but</div><div class="csw">Stabilise avant le tir</div></div></div>
+    <div class="cs final"><div class="csn" style="background:var(--green)">3</div><div><div class="csa">L ↗ + R1 + ● à 1/2 barre</div><div class="csw">Finesse coin droit éloigné — BUT</div></div></div>
+  </div>
+  <div class="combotip">Ce combo est utilisé dans 70% des buts des pros. Stepover ou ball roll avant le tir le rend indéfendable.</div>
+</div>
+<div class="combo">
+  <div class="combon">Combo 2 — Fausse frappe + tir réel <span class="tag t-must" style="margin-left:6px">Très efficace</span></div>
+  <div class="combosteps">
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">1</div><div><div class="csa">R1 + L ↑ (avance vers le but)</div><div class="csw">Approche contrôlée</div></div></div>
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">2</div><div><div class="csa">● feinte → immédiatement ✕ + L ←</div><div class="csw">Défenseur saute, gardien plonge à gauche</div></div></div>
+    <div class="cs final"><div class="csn" style="background:var(--green)">3</div><div><div class="csa">L ↗ + R1 + ● dans le coin droit</div><div class="csw">Gardien au sol — coin droit ouvert — BUT</div></div></div>
+  </div>
+  <div class="combotip">Surveille où le gardien plonge après la feinte. Tire dans le coin OPPOSÉ à sa plongée.</div>
+</div>
+<div class="combo">
+  <div class="combon">Combo 3 — Bouclier + pivot + tir (dos au but)</div>
+  <div class="combosteps">
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">1</div><div><div class="csa">L1 + L ↓ dès la réception</div><div class="csw">Bouclier — défenseur bloqué</div></div></div>
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">2</div><div><div class="csa">L neutre + L2 (pivot face au but)</div><div class="csw">Le défenseur est encore derrière</div></div></div>
+    <div class="cs final"><div class="csn" style="background:var(--green)">3</div><div><div class="csa">R1 + L coin + ● immédiatement</div><div class="csw">Fenêtre de 1 seconde — BUT</div></div></div>
+  </div>
+  <div class="combotip">Enchaîne SANS pause entre le pivot et le tir. Chaque demi-seconde de trop = le défenseur se replace.</div>
+</div>
+<div class="combo">
+  <div class="combon">Combo 4 — Stop net + tir (sprint boost)</div>
+  <div class="combosteps">
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">1</div><div><div class="csa">R2 + L ↑ (sprint vers le but)</div><div class="csw">Défenseur lancé en sprint avec toi</div></div></div>
+    <div class="cs" style="background:var(--bg2)"><div class="csn" style="background:var(--purple)">2</div><div><div class="csa">L neutre — arrêt net</div><div class="csw">Défenseur lancé te dépasse par inertie</div></div></div>
+    <div class="cs final"><div class="csn" style="background:var(--green)">3</div><div><div class="csa">R1 + L coin + ● immédiatement</div><div class="csw">1 seconde de liberté totale — BUT</div></div></div>
+  </div>
+</div>
+</div><!-- tirs-combos -->
+
+</div><!-- sec-tirs -->
+<!-- ======= DEFENSE ======= -->
+<div id="sec-defense" class="sec">
+<div class="itabs">
+  <button class="itab on" onclick="showI('defense','situations',this)">Situations</button>
+  <button class="itab" onclick="showI('defense','commandes',this)">Commandes</button>
+  <button class="itab" onclick="showI('defense','regles',this)">5 Règles d'or</button>
+</div>
+
+<div id="defense-situations" class="ipanel on">
+<p style="font-size:12px;color:var(--text2);margin-bottom:14px">Clique pour voir quoi faire étape par étape. Points rouges = difficulté.</p>
+
+<div class="sitcard" onclick="toggleSit(this)">
+  <div class="sithdr"><span class="sitico">🎯</span><div class="sitinfo"><div class="sittitle">1 contre 1 face à l'attaquant</div><div class="sitsub">L'attaquant court droit vers toi avec le ballon.</div></div><div class="sitdiff"><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--border2)"></div><div class="ddot" style="background:var(--border2)"></div></div></div>
+  <div class="sitbody">
+    <div class="wrong"><div class="wrongt">Ce que tu fais probablement :</div><div class="wrongd">Foncer avec ● (tacle) ou faire un tacle glissé. L'attaquant te contourne facilement — ton joueur est engagé dans l'animation de tacle et tu laisses un trou béant.</div></div>
+    <div class="right"><div class="rightt">Ce qu'il faut faire :</div>
+      <div class="rightstep"><div class="rsn">1</div><div class="rstxt">L2 + R2 (speed jockey) pour rester face à lui</div></div>
+      <div class="rightstep"><div class="rsn">2</div><div class="rstxt">Recule LÉGÈREMENT en gardant 1-2m de distance</div></div>
+      <div class="rightstep"><div class="rsn">3</div><div class="rstxt">Attends qu'il fasse un geste technique ou une grosse touche</div></div>
+      <div class="rightstep"><div class="rsn">4</div><div class="rstxt">Quand le ballon s'éloigne de ses pieds : TAP ● (tacle debout)</div></div>
+    </div>
+    <div class="golden"><div class="goldent">Règle d'or</div><div class="goldend">Ne tacle JAMAIS en premier. Laisse l'attaquant faire l'erreur. Ton job c'est de retarder, pas de récupérer.</div></div>
+  </div>
+</div>
+
+<div class="sitcard" onclick="toggleSit(this)">
+  <div class="sithdr"><span class="sitico">⚡</span><div class="sitinfo"><div class="sittitle">Contre-attaque rapide (2v2, 3v2...)</div><div class="sitsub">L'adversaire repart vite après ta perte de balle.</div></div><div class="sitdiff"><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--border2)"></div></div></div>
+  <div class="sitbody">
+    <div class="wrong"><div class="wrongt">Ce que tu fais probablement :</div><div class="wrongd">Monter avec un défenseur pour presser le porteur. Tu sors un défenseur de ta ligne et ça crée un espace béant pour la passe en profondeur.</div></div>
+    <div class="right"><div class="rightt">Ce qu'il faut faire :</div>
+      <div class="rightstep"><div class="rsn">1</div><div class="rstxt">NE MONTE PAS. Cours vers ton but avec ton défenseur</div></div>
+      <div class="rightstep"><div class="rsn">2</div><div class="rstxt">Switch (stick droit) vers le défenseur le plus proche de la trajectoire</div></div>
+      <div class="rightstep"><div class="rsn">3</div><div class="rstxt">L2 + R2 pour jockey une fois positionné</div></div>
+      <div class="rightstep"><div class="rsn">4</div><div class="rstxt">Couvre la passe en profondeur en restant ENTRE l'attaquant et ton but</div></div>
+    </div>
+    <div class="golden"><div class="goldent">Règle d'or</div><div class="goldend">En contre-attaque, ta priorité c'est COUVRIR L'ESPACE, pas récupérer le ballon. Ralentis l'action, laisse tes milieux revenir.</div></div>
+  </div>
+</div>
+
+<div class="sitcard" onclick="toggleSit(this)">
+  <div class="sithdr"><span class="sitico">↗️</span><div class="sitinfo"><div class="sittitle">Attaque par les ailes (centre/cross)</div><div class="sitsub">L'adversaire déborde sur le côté et prépare un centre.</div></div><div class="sitdiff"><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--border2)"></div></div></div>
+  <div class="sitbody">
+    <div class="wrong"><div class="wrongt">Ce que tu fais probablement :</div><div class="wrongd">Laisser le centre passer en contrôlant un milieu central. Si personne ne gêne le centreur, il met un centre parfait.</div></div>
+    <div class="right"><div class="rightt">Ce qu'il faut faire :</div>
+      <div class="rightstep"><div class="rsn">1</div><div class="rstxt">Switch (stick droit) vers ton latéral du côté du ballon</div></div>
+      <div class="rightstep"><div class="rsn">2</div><div class="rstxt">Cours vers le centreur pour réduire son angle</div></div>
+      <div class="rightstep"><div class="rsn">3</div><div class="rstxt">L2 pour jockey en arrivant près de lui — force-le vers la ligne</div></div>
+      <div class="rightstep"><div class="rsn">4</div><div class="rstxt">Si le centre part : switch vers ton DC et place-toi devant l'attaquant</div></div>
+    </div>
+    <div class="golden"><div class="goldent">Règle d'or</div><div class="goldend">Le but c'est de FORCER le centreur à centrer dans de mauvaises conditions. Ne le laisse jamais centrer tranquillement.</div></div>
+  </div>
+</div>
+
+<div class="sitcard" onclick="toggleSit(this)">
+  <div class="sithdr"><span class="sitico">📐</span><div class="sitinfo"><div class="sittitle">Passe en profondeur dans le dos de la défense</div><div class="sitsub">L'adversaire cherche à passer derrière ta ligne.</div></div><div class="sitdiff"><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div></div></div>
+  <div class="sitbody">
+    <div class="wrong"><div class="wrongt">Ce que tu fais probablement :</div><div class="wrongd">Monter ta ligne trop haut ou ne pas switcher assez vite. L'attaquant est lancé seul face au gardien.</div></div>
+    <div class="right"><div class="rightt">Ce qu'il faut faire :</div>
+      <div class="rightstep"><div class="rsn">1</div><div class="rstxt">Anticipe : regarde où sont les attaquants sans ballon</div></div>
+      <div class="rightstep"><div class="rsn">2</div><div class="rstxt">Switch (stick droit) vers le DC le plus proche de l'attaquant qui court</div></div>
+      <div class="rightstep"><div class="rsn">3</div><div class="rstxt">Cours AVEC l'attaquant, pas vers le ballon</div></div>
+      <div class="rightstep"><div class="rsn">4</div><div class="rstxt">Si dépassé : Triangle pour sortir le gardien rapidement</div></div>
+    </div>
+    <div class="golden"><div class="goldent">Règle d'or</div><div class="goldend">Le secret c'est le SWITCH PRÉVENTIF. Avant même la passe, prends le contrôle du défenseur qui couvre la course.</div></div>
+  </div>
+</div>
+
+<div class="sitcard" onclick="toggleSit(this)">
+  <div class="sithdr"><span class="sitico">🔥</span><div class="sitinfo"><div class="sittitle">L'adversaire est dans ta surface</div><div class="sitsub">L'attaquant est dans les 16m, prêt à tirer.</div></div><div class="sitdiff"><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div></div></div>
+  <div class="sitbody">
+    <div class="wrong"><div class="wrongt">Ce que tu fais probablement :</div><div class="wrongd">Tacle glissé ou sortir un défenseur de position. Dans la surface, tacle glissé = pénalty presque garanti.</div></div>
+    <div class="right"><div class="rightt">Ce qu'il faut faire :</div>
+      <div class="rightstep"><div class="rsn">1</div><div class="rstxt">L2 + R2 pour speed jockey — RESTE DEBOUT</div></div>
+      <div class="rightstep"><div class="rsn">2</div><div class="rstxt">Bloque l'angle de tir en te plaçant entre le tireur et le but</div></div>
+      <div class="rightstep"><div class="rsn">3</div><div class="rstxt">N'appuie sur ● que si tu es SÛR à 100% de toucher le ballon</div></div>
+      <div class="rightstep"><div class="rsn">4</div><div class="rstxt">R1 (2e défenseur IA) pour que l'IA t'aide sans que TU bouges</div></div>
+    </div>
+    <div class="golden"><div class="goldent">Règle d'or</div><div class="goldend">Dans la surface, la patience c'est tout. Un tacle raté = but. Un bon placement = l'attaquant se précipite et rate.</div></div>
+  </div>
+</div>
+
+<div class="sitcard" onclick="toggleSit(this)">
+  <div class="sithdr"><span class="sitico">🌀</span><div class="sitinfo"><div class="sittitle">L'adversaire enchaîne les dribbles/skills</div><div class="sitsub">L'attaquant fait des gestes techniques pour te déstabiliser.</div></div><div class="sitdiff"><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--red)"></div><div class="ddot" style="background:var(--border2)"></div></div></div>
+  <div class="sitbody">
+    <div class="wrong"><div class="wrongt">Ce que tu fais probablement :</div><div class="wrongd">Réagir à chaque feinte en bougeant le stick dans tous les sens. C'est exactement ce qu'il veut — chaque mouvement de ta part ouvre un espace.</div></div>
+    <div class="right"><div class="rightt">Ce qu'il faut faire :</div>
+      <div class="rightstep"><div class="rsn">1</div><div class="rstxt">L2 + R2 pour rester face à lui — NE BOUGE PAS latéralement</div></div>
+      <div class="rightstep"><div class="rsn">2</div><div class="rstxt">Garde environ 1.5m de distance — ni trop près ni trop loin</div></div>
+      <div class="rightstep"><div class="rsn">3</div><div class="rstxt">Ignore les feintes : regarde le BALLON, pas le joueur</div></div>
+      <div class="rightstep"><div class="rsn">4</div><div class="rstxt">Tacle uniquement après le skill move, quand le ballon s'éloigne</div></div>
+    </div>
+    <div class="golden"><div class="goldent">Règle d'or</div><div class="goldend">Les skill moves sont faits pour te faire réagir. Si tu ne réagis pas, ils ne servent à rien. Reste calme et immobile.</div></div>
+  </div>
+</div>
+</div><!-- defense-situations -->
+
+<div id="defense-commandes" class="ipanel">
+<div class="card">
+  <div class="ctitle">Commandes défensives essentielles</div>
+  <div class="ctrlrow"><div class="ctrlbtn">L2</div><div class="ctrlbody"><div class="ctrln">Jockey <span class="esse">ESSENTIEL</span></div><div class="ctrld">Positionne ton défenseur face à l'attaquant. LA commande défensive la plus importante. L2 + L = tu suis ses mouvements.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">L2 + R2</div><div class="ctrlbody"><div class="ctrln">Speed Jockey <span class="esse">ESSENTIEL</span></div><div class="ctrld">Jockey rapide. Plus réactif que L2 seul. À utiliser la majorité du temps en défense.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">Stick droit</div><div class="ctrlbody"><div class="ctrln">Changement joueur manuel <span class="esse">ESSENTIEL</span></div><div class="ctrld">Switch précis vers le joueur dans la direction du stick. Bien mieux que L1 automatique — tu choisis exactement qui tu veux.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">R1 (maintenir)</div><div class="ctrlbody"><div class="ctrln">Second Man Press <span class="esse">ESSENTIEL</span></div><div class="ctrld">Un coéquipier IA vient presser le porteur. Toi tu coupes la passe. Très efficace combiné avec le jockey.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">●</div><div class="ctrlbody"><div class="ctrln">Tacle debout</div><div class="ctrld">TAP une seule fois — ne maintiens pas. Uniquement quand tu es sûr de toucher le ballon.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">R1 + ●</div><div class="ctrlbody"><div class="ctrln">Tacle appuyé</div><div class="ctrld">Plus puissant. Plus risqué mais récupère mieux le ballon.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">■</div><div class="ctrlbody"><div class="ctrln">Tacle glissé <span class="risky">RISQUÉ</span></div><div class="ctrld">DERNIER RECOURS. Si tu rates, ton joueur est au sol 2 secondes. Jamais dans la surface — pénalty.</div></div></div>
+  <div class="ctrlrow"><div class="ctrlbtn">L1</div><div class="ctrlbody"><div class="ctrln">Changement joueur (auto)</div><div class="ctrld">Change vers le joueur le plus proche du ballon. Moins précis que le stick droit.</div></div></div>
+</div>
+</div><!-- defense-commandes -->
+
+<div id="defense-regles" class="ipanel">
+<div class="rulecard"><div class="rulen" style="background:var(--gdim);color:var(--green)">1</div><div><div class="rulet" style="color:var(--green)">Ne contrôle JAMAIS un DC sauf en dernier recours</div><div class="ruled" style="color:#90e8bf">Utilise tes milieux et latéraux pour presser. Bouger un DC crée un trou que l'IA ne comble pas assez vite. Contrôle un DC uniquement quand l'attaquant est dans les 25 derniers mètres.</div></div></div>
+<div class="rulecard"><div class="runen" style="background:var(--bdim);color:var(--blue)">2</div><div><div class="rulet" style="color:var(--blue)">L2+R2 (speed jockey) est ta posture PAR DÉFAUT</div><div class="ruled" style="color:#90c8f0">Dès que l'adversaire a le ballon près de toi, L2+R2. Ce doit devenir un réflexe automatique. Tu lâches uniquement pour sprinter en couverture ou pour tacler.</div></div></div>
+<div class="rulecard"><div class="rulen" style="background:var(--pdim);color:var(--purple)">3</div><div><div class="rulet" style="color:var(--purple)">Le tacle est un DERNIER recours, pas une première option</div><div class="ruled" style="color:#c8c2f5">Hiérarchie : 1) Jockey + placement · 2) Interception de passe · 3) Tacle debout (tap ●) · 4) Tacle appuyé (R1+●) · 5) Tacle glissé (■). Monte dans la hiérarchie uniquement si le niveau précédent a échoué.</div></div></div>
+<div class="rulecard"><div class="runen" style="background:var(--oddim);color:var(--gold)">4</div><div><div class="rulet" style="color:var(--gold)">Switch avec le STICK DROIT, pas L1</div><div class="ruled" style="color:#c8a830">L1 switche vers le joueur le plus proche du ballon, ce qui n'est pas toujours le bon. Le stick droit te laisse choisir exactement quel joueur contrôler. C'est la différence entre encaisser et intercepter.</div></div></div>
+<div class="rulecard"><div class="runen" style="background:var(--rdim);color:var(--red)">5</div><div><div class="rulet" style="color:var(--red)">Cours vers TON but, pas vers le ballon</div><div class="ruled" style="color:#f08080">Quand l'adversaire avance, ta priorité c'est de te replacer entre lui et ton but, pas de courir vers le ballon. Couvre l'espace d'abord, récupère ensuite. Contre-intuitif mais ça change tout.</div></div></div>
+</div><!-- defense-regles -->
+
+</div><!-- sec-defense -->
+<!-- ======= PASSES ======= -->
+<div id="sec-passes" class="sec">
+<div class="itabs">
+  <button class="itab on" onclick="showI('passes','types',this)">Types de passes</button>
+  <button class="itab" onclick="showI('passes','controle',this)">Première touche</button>
+  <button class="itab" onclick="showI('passes','centres',this)">Centres</button>
+  <button class="itab" onclick="showI('passes','setpieces',this)">Corners & CFs</button>
+</div>
+
+<div id="passes-types" class="ipanel on">
+<div class="filters">
+  <button class="filt on" onclick="filterPasses('all',this)">Toutes</button>
+  <button class="filt" onclick="filterPasses('base',this)">Basiques</button>
+  <button class="filt" onclick="filterPasses('profondeur',this)">Profondeur</button>
+  <button class="filt" onclick="filterPasses('lob',this)">Lobées</button>
+  <button class="filt" onclick="filterPasses('tactique',this)">Tactique</button>
+</div>
+<div id="passes-list">
+
+<div class="movecard" data-pcat="base" onclick="toggleMove(this)">
+  <div class="movehdr"><span class="movestars" style="background:var(--gdim);color:var(--green);border:1px solid var(--green)">Base</span><span class="movename">Passe courte (✕)</span><span class="movetype ty-press">ESSENTIEL</span></div>
+  <div class="movedesc">La passe la plus utilisée. Appui bref = douce, appui long = plus forte.</div>
+  <div class="movebody">
+    <div class="mini-box" style="background:var(--bdim)"><div class="mini-lbl" style="color:var(--blue)">Touches</div><div class="btns"><span class="b bls">L (vers coéquipier)</span><span class="barr">+</span><span class="b bx">✕</span></div></div>
+    <div class="mini-box" style="background:var(--gdim)"><div class="mini-lbl" style="color:var(--green)">Conseil</div><div style="font-size:12px;color:var(--green)">Oriente L vers le coéquipier AVANT d'appuyer ✕. Appui bref = passe douce. Appui long = plus forte.</div></div>
+    <div class="mini-box" style="background:var(--bg3)"><div class="mini-lbl" style="color:var(--text2)">Quand</div><div style="font-size:12px;color:var(--text2)">Construction de jeu, passes courtes en triangle</div></div>
+  </div>
+</div>
+
+<div class="movecard" data-pcat="base" onclick="toggleMove(this)">
+  <div class="movehdr"><span class="movestars" style="background:var(--gdim);color:var(--green);border:1px solid var(--green)">Base</span><span class="movename">Passe tendue (R1+✕)</span><span class="movetype ty-press">Rapide</span></div>
+  <div class="movedesc">Passe forte et rapide au sol — difficile à intercepter.</div>
+  <div class="movebody">
+    <div class="mini-box" style="background:var(--bdim)"><div class="mini-lbl" style="color:var(--blue)">Touches</div><div class="btns"><span class="b br1">R1</span><span class="barr">+</span><span class="b bx">✕</span></div></div>
+    <div class="mini-box" style="background:var(--gdim)"><div class="mini-lbl" style="color:var(--green)">Conseil</div><div style="font-size:12px;color:var(--green)">Idéal pour les una-dos rapides et pour casser une ligne défensive serrée.</div></div>
+    <div class="mini-box" style="background:var(--bg3)"><div class="mini-lbl" style="color:var(--text2)">Quand</div><div style="font-size:12px;color:var(--text2)">Passes courtes sous pression, jeu rapide</div></div>
+  </div>
+</div>
+
+<div class="movecard" data-pcat="profondeur" onclick="toggleMove(this)">
+  <div class="movehdr"><span class="movestars" style="background:var(--pdim);color:var(--purple);border:1px solid var(--purple)">Profondeur</span><span class="movename">Passe en profondeur (△)</span><span class="movetype ty-flick">Espace</span></div>
+  <div class="movedesc">Envoie le ballon dans l'espace derrière la défense.</div>
+  <div class="movebody">
+    <div class="mini-box" style="background:var(--bdim)"><div class="mini-lbl" style="color:var(--blue)">Touches</div><div class="btns"><span class="b bls">L (vers l'espace)</span><span class="barr">+</span><span class="b bt">△</span></div></div>
+    <div class="mini-box" style="background:var(--gdim)"><div class="mini-lbl" style="color:var(--green)">Conseil</div><div style="font-size:12px;color:var(--green)">Ne vise PAS le joueur, vise l'espace où il va être dans 2 secondes. 1-2 barres de puissance suffisent.</div></div>
+    <div class="warn" style="margin-top:6px">⚠ △ est inutile si l'attaquant est immobile. Il doit déjà être en course vers l'espace.</div>
+  </div>
+</div>
+
+<div class="movecard" data-pcat="profondeur" onclick="toggleMove(this)">
+  <div class="movehdr"><span class="movestars" style="background:var(--pdim);color:var(--purple);border:1px solid var(--purple)">Profondeur</span><span class="movename">Profondeur lobée longue (L1+△)</span><span class="movetype ty-flick">Long ballon</span></div>
+  <div class="movedesc">Longue balle aérienne vers un attaquant en profondeur.</div>
+  <div class="movebody">
+    <div class="mini-box" style="background:var(--bdim)"><div class="mini-lbl" style="color:var(--blue)">Touches</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b bt">△</span></div></div>
+    <div class="mini-box" style="background:var(--gdim)"><div class="mini-lbl" style="color:var(--green)">Conseil</div><div style="font-size:12px;color:var(--green)">Parfait pour les contre-attaques rapides sur grande distance. Attaquant rapide lancé dans le dos de la défense.</div></div>
+  </div>
+</div>
+
+<div class="movecard" data-pcat="lob" onclick="toggleMove(this)">
+  <div class="movehdr"><span class="movestars" style="background:var(--bdim);color:var(--blue);border:1px solid var(--blue)">Lobée</span><span class="movename">Lob / Transversale (■)</span><span class="movetype ty-hold">Changement d'aile</span></div>
+  <div class="movedesc">Passe aérienne longue en cloche pour changer de côté.</div>
+  <div class="movebody">
+    <div class="mini-box" style="background:var(--bdim)"><div class="mini-lbl" style="color:var(--blue)">Touches</div><div class="btns"><span class="b bls">L (vers l'aile)</span><span class="barr">+</span><span class="b bs">■</span></div></div>
+    <div class="mini-box" style="background:var(--gdim)"><div class="mini-lbl" style="color:var(--green)">Conseil</div><div style="font-size:12px;color:var(--green)">Idéal pour changer de côté du terrain. Plus tu maintiens, plus ça va loin et haut.</div></div>
+  </div>
+</div>
+
+<div class="movecard" data-pcat="tactique" onclick="toggleMove(this)">
+  <div class="movehdr"><span class="movestars" style="background:var(--oddim);color:var(--gold);border:1px solid var(--gold)">Tactique</span><span class="movename">Passe et va / Una-dos (L1+✕)</span><span class="movetype ty-press">Dévastateur</span></div>
+  <div class="movedesc">Fait la passe puis ton joueur sprinte vers l'avant automatiquement.</div>
+  <div class="movebody">
+    <div class="mini-box" style="background:var(--bdim)"><div class="mini-lbl" style="color:var(--blue)">Touches</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b bx">✕</span><span class="barr">puis ton coéquipier te rend le ballon</span></div></div>
+    <div class="mini-box" style="background:var(--gdim)"><div class="mini-lbl" style="color:var(--green)">Conseil</div><div style="font-size:12px;color:var(--green)">ESSENTIEL. Après la passe, ton joueur fait un appel automatique. Renvoie-lui le ballon avec △ pour un 1-2 dévastateur.</div></div>
+    <div class="secret" style="margin-top:6px"><b>Séquence complète :</b> L1+✕ (passe+appel) → ton joueur sprint → △ (profondeur vers lui) → il reçoit seul — défense déchirée.</div>
+  </div>
+</div>
+
+</div><!-- passes-list -->
+</div><!-- passes-types -->
+
+<div id="passes-controle" class="ipanel">
+<p style="font-size:12px;color:var(--text2);margin-bottom:14px">La première touche décide de tout. Un bon contrôle = tu gardes le ballon. Un mauvais = tu le perds.</p>
+<div class="card">
+  <div class="ctitle">Principes fondamentaux</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Oriente L AVANT que le ballon arrive</div><div class="sd">Quand le ballon est en chemin vers toi, oriente L dans la direction où tu veux repartir. Ton joueur contrôle déjà orienté. Tu gagnes 0.5 seconde sur le défenseur — énorme dans la surface.</div><div class="btns"><span class="b bls">L (direction voulue)</span><span class="barr">orienté AVANT réception</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Contrôle normal — juste le stick gauche</div><div class="sd">N'appuie sur rien d'autre. Juste L dans la direction où tu veux aller. C'est la base.</div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Contrôle en sprint — R2 + L</div><div class="sd">Touche lourde et loin des pieds. À utiliser UNIQUEMENT quand tu as beaucoup d'espace devant toi.</div><div class="btns"><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L ↑</span><span class="barr">espace libre uniquement</span></div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Laisser passer (dummy) — R1 + L loin du ballon</div><div class="sd">R1 maintenu + L dans la direction opposée au ballon = ton joueur laisse passer. Le joueur derrière récupère. Imprévisible.</div><div class="btns"><span class="b br1">R1 maintenu</span><span class="barr">+</span><span class="b bls">L loin du ballon</span></div></div></div>
+  <div class="step"><div class="sn">5</div><div class="sb"><div class="sa">Face au but — L1 + pas de direction</div><div class="sd">Si tu reçois dos au but, L1 + L neutre = ton joueur se tourne face au but adverse automatiquement.</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b bls">L neutre</span></div></div></div>
+  <div class="secret"><b>Le secret des pros :</b> Ils n'ont jamais besoin de réfléchir à la réception parce qu'ils ont déjà décidé où aller AVANT que le ballon arrive. Entraîne-toi à décider avant chaque réception.</div>
+</div>
+</div><!-- passes-controle -->
+
+<div id="passes-centres" class="ipanel">
+<div class="card">
+  <div class="ctitle">Les types de centres (■ depuis les côtés)</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Centre classique — ■ à 2-3 barres</div><div class="sd">L ↑ = premier poteau. L ↗↖ = deuxième poteau. 2-3 barres pour le 1er poteau, 3-4 barres pour le 2e.</div><div class="btns"><span class="b bls">L (direction)</span><span class="barr">+</span><span class="b bs">■</span><span class="barr">2-4 barres</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Centre bas — ■+■ (2 appuis)</div><div class="sd">LE plus efficace. Le ballon arrive aux pieds de l'attaquant. Beaucoup plus facile à convertir qu'un centre aérien.</div><div class="btns"><span class="b bs">■</span><span class="barr">+</span><span class="b bs">■</span><span class="barr">2-3 barres</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Centre tendu bas — L1+R1+■+■</div><div class="sd">Le centre le plus dangereux. Rase le sol à toute vitesse. Difficile pour le gardien ET les défenseurs.</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bs">■</span><span class="barr">+</span><span class="b bs">■</span><span class="barr">2 barres</span></div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Centre en retrait (cut back) — ■ + L vers arrière</div><div class="sd">L vers ← ou ↓ en centrant. Ballon vers un joueur à l'entrée de la surface. REDOUTABLE pour un tir première touche.</div><div class="btns"><span class="b bls">L ← ou ↓</span><span class="barr">+</span><span class="b bs">■</span><span class="barr">1-2 barres</span></div></div></div>
+  <div class="step"><div class="sn">5</div><div class="sb"><div class="sa">Fausse passe (feinte) — ■ puis ✕+L</div><div class="sd">■ commence l'animation de centre, puis ✕+L pour repartir en dribble. Élimine le latéral adverse sur le côté.</div><div class="btns"><span class="b bs">■</span><span class="barr">feinte →</span><span class="b bx">✕</span><span class="barr">+</span><span class="b bls">L dir.</span></div></div></div>
+</div>
+</div><!-- passes-centres -->
+
+<div id="passes-setpieces" class="ipanel">
+<div class="card">
+  <div class="ctitle">Corners — la technique de base</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Inswinger (pied droit à gauche) — le plus efficace</div><div class="sd">Le ballon courbe VERS le but. Vise le point de pénalty. 3 barres de puissance avec ■. Switch L1 vers ton meilleur joueur aérien — premier poteau.</div><div class="btns"><span class="b bls">L (point pénalty)</span><span class="barr">+</span><span class="b bs">■</span><span class="barr">3 barres</span><span class="barr">→</span><span class="b bl1">L1</span><span class="barr">switch</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Corner court — ✕ pour passer court</div><div class="sd">Si le corner classique ne passe plus. Passe au joueur proche puis centre depuis un meilleur angle.</div><div class="btns"><span class="b bx">✕</span><span class="barr">(passe courte)</span><span class="barr">→ meilleur angle →</span><span class="b bs">■</span></div></div></div>
+  <div class="good">Règle clé : pied droit sur les corners à gauche (inswinger). Règle dans les tactiques : Corners à 1 pour des corners proches du but.</div>
+</div>
+<div class="card">
+  <div class="ctitle">Coups francs — les essentiels</div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Coup franc enroulé (pied droit, CF à gauche)</div><div class="sd">Vise au-dessus du joueur le plus à gauche du mur. Stick droit bas-gauche + ● avec 3 barres. Le ballon doit passer AU-DESSUS du mur puis plonge dans la lucarne droite.</div><div class="btns"><span class="b bls">L (au-dessus mur)</span><span class="barr">+</span><span class="b brs">RS bas-gauche</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">3 barres</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Coup franc puissant (knuckleball) — 25-30m</div><div class="sd">PAS de stick droit (pas d'effet). L1+R1+● (Power Shot) à 2.5 barres. Le ballon part droit et fort, bouge de façon imprévisible.</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">2.5 barres</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Puissance selon la distance</div><div class="sd">18m = 1.5 barres · 22-25m = 2-2.5 barres · 28-30m = 3 barres. Trop de puissance = au-dessus de la barre. C'est l'erreur n°1.</div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Pénaltys — le timing est tout</div><div class="sd">Vise un des 4 coins avec L. ● 2-3 barres. Le cercle vert doit être le PLUS PETIT possible quand tu frappes. Un pénalty bien timé dans un coin est quasi imparable.</div><div class="btns"><span class="b bls">L coin</span><span class="barr">+</span><span class="b bo">●</span><span class="barr">2-3 barres + timing précis</span></div></div></div>
+</div>
+</div><!-- passes-setpieces -->
+
+</div><!-- sec-passes -->
+<!-- ======= SKILL MOVES ======= -->
+<!-- ======= SKILL MOVES ======= -->
+<div id="sec-skills" class="sec">
+<div class="itabs">
+  <button class="itab on" onclick="showI('skills','testeur',this)">🎮 Testeur 360°</button>
+  <button class="itab" onclick="showI('skills','moves',this)">📋 Tous les moves</button>
+  <button class="itab" onclick="showI('skills','plan',this)">📈 Plan progressif</button>
+</div>
+
+<!-- TESTEUR 360 -->
+<div id="skills-testeur" class="ipanel on">
+<div class="card">
+  <div class="ctitle">Direction du joueur (stick gauche LS)</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Choisis la direction où court ton joueur sur l'écran, puis explore les zones du joystick droit.</p>
+  <div id="dir-picker" style="position:relative;width:130px;height:130px;margin:0 auto 16px"></div>
+</div>
+<div class="card">
+  <div class="itabs" style="margin-bottom:12px">
+    <button class="itab on" id="zone-flick-btn" onclick="setZoneMode('flick',this)">Flick rapide</button>
+    <button class="itab" id="zone-hold-btn" onclick="setZoneMode('hold',this)">Maintenir</button>
+  </div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:10px;text-align:center">Touche le cercle pour voir quel geste sort à chaque position du joystick droit</p>
+  <canvas id="zone-canvas" width="280" height="280" style="width:100%;max-width:280px;display:block;margin:0 auto;cursor:crosshair;touch-action:none"></canvas>
+  <div id="zone-info" style="margin-top:10px;display:none"></div>
+</div>
+</div><!-- skills-testeur -->
+
+<!-- MOVES LIST -->
+<div id="skills-moves" class="ipanel">
+<div class="card" style="padding:12px 14px">
+  <div class="ctitle" style="margin-bottom:8px">Direction du joueur (pour les diagrammes)</div>
+  <div id="dir-picker-moves" style="position:relative;width:130px;height:130px;margin:0 auto"></div>
+</div>
+<div class="filters" style="margin-top:12px">
+  <button class="filt on" onclick="filterMoves('all',this)">Tous</button>
+  <button class="filt" onclick="filterMoves('2',this)">2★</button>
+  <button class="filt" onclick="filterMoves('3',this)">3★</button>
+  <button class="filt" onclick="filterMoves('4',this)">4★</button>
+  <button class="filt" onclick="filterMoves('5',this)">5★</button>
+</div>
+<div id="moves-list"></div>
+</div><!-- skills-moves -->
+
+<!-- PLAN PROGRESSIF -->
+<div id="skills-plan" class="ipanel">
+<div class="diffgrid">
+  <div class="dc dcbad"><div class="dct" style="color:var(--red)">❌ Mauvaise approche</div><div class="dci">Apprendre 5 moves en même temps</div><div class="dci">Essayer en match sans pratiquer</div><div class="dci">Utiliser partout sans contexte</div><div class="dci">Régression immédiate du niveau</div></div>
+  <div class="dc dcgood"><div class="dct" style="color:var(--green)">✓ Bonne approche</div><div class="dci">1 move à la fois, maîtrisé à 100%</div><div class="dci">Practice arena d'abord</div><div class="dci">Contexte précis pour chaque move</div><div class="dci">Progression stable et durable</div></div>
+</div>
+<div class="card">
+  <div class="ctitle">Plan 6 semaines</div>
+  <div class="planstep"><div class="plann" style="background:var(--gdim);color:var(--green)">1</div><div><div class="plant">Semaine 1 — Ball roll uniquement</div><div class="pland">Practice arena : ball roll ← et → 10 min/jour jusqu'à ce que ce soit automatique. En match : uniquement pour aligner le tir dans la surface (R tenu ← ou → puis R1+●).</div></div></div>
+  <div class="planstep"><div class="plann" style="background:var(--bdim);color:var(--blue)">2</div><div><div class="plant">Semaine 2 — Ball roll en dribble + switch défensif R</div><div class="pland">Ball roll aussi pour changer de direction face aux défenseurs. En défense : utilise R (pas L1) pour switcher précisément vers le bon joueur.</div></div></div>
+  <div class="planstep"><div class="plann" style="background:var(--oddim);color:var(--gold)">3</div><div><div class="plant">Semaine 3 — Drag back</div><div class="pland">Practice arena : drag back (R flick ↓ depuis course ↑) + sortie vers ↗ ou ↖. Maîtrise les 2 situations : défenseur face à toi, et dos au but dans la surface.</div></div></div>
+  <div class="planstep"><div class="plann" style="background:var(--rdim);color:var(--red)">4</div><div><div class="plant">Semaine 4 — Stepover (joueur 3★ requis)</div><div class="pland">Practice arena : R roll ↑→← + sortie R2+L →. En match : uniquement en 1v1 dans le couloir latéral avec 3m+ d'espace. Quand maîtrisé, ajoute L1 pour l'Explosive Stepover.</div></div></div>
+  <div class="planstep"><div class="plann" style="background:var(--pdim);color:var(--purple)">5</div><div><div class="plant">Semaine 5 — La Croqueta (joueur 4★ requis)</div><div class="pland">Vérifie que ton attaquant/ailier a 4★. Practice arena : L1 + R tenu ← avec L ↑ simultané. En match : 1v1 face à un défenseur en jockey seulement.</div></div></div>
+  <div class="planstep"><div class="plann" style="background:#2d1f5e;color:#c8c2f5">6</div><div><div class="plant">Semaine 6+ — Intégration</div><div class="pland">Tous les moves sont automatiques. Commence à combiner : ball roll + Croqueta selon la situation. Travaille le switch anticipé en défense (R AVANT la passe adverse).</div></div></div>
+  <div class="secret" style="margin-top:8px"><b>Règle d'or :</b> 1 move maîtrisé à 100% vaut 5 moves maîtrisés à 50%. Ne passe jamais à la semaine suivante si la semaine en cours n'est pas automatique.</div>
+</div>
+</div><!-- skills-plan -->
+</div><!-- sec-skills -->
+<!-- ======= NIVEAU ÉLITE ======= -->
+<div id="sec-avance" class="sec">
+<div class="itabs">
+  <button class="itab on" onclick="showI('avance','rythme',this)">⚡ Jeu de rythme</button>
+  <button class="itab" onclick="showI('avance','espace',this)">🧠 Créer l'espace</button>
+  <button class="itab" onclick="showI('avance','sprint',this)">🏃 Sprint boost</button>
+  <button class="itab" onclick="showI('avance','passes-pro',this)">🎯 Passes pro</button>
+  <button class="itab" onclick="showI('avance','lecture',this)">👁 Lire le jeu</button>
+  <button class="itab" onclick="showI('avance','tactique',this)">⚽ Tactique</button>
+</div>
+
+<div id="avance-rythme" class="ipanel on">
+<div class="card">
+  <div class="ctitle">Le changement de rythme <span class="tag t-elite">Compétence n°1 des pros</span></div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">La majorité des joueurs jouent à vitesse constante. Les pros accélèrent, freinent, réaccélèrent dans la même séquence. Un défenseur peut suivre une vitesse constante — il ne peut pas suivre des changements brusques.</p>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">L'arrêt appât — le geste le plus sous-estimé</div><div class="sd">Tu sprintes ↑ avec R2. Le défenseur court avec toi. À 3m de lui, lâche R2 brusquement, L neutre une demi-seconde. Ton joueur s'arrête net. Le défenseur lancé en sprint DÉPASSE devant toi par inertie. Tu as 1-2 secondes complètement libre pour passer ou tirer.</div><div class="btns"><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L ↑</span><span class="barr">→</span><span class="b bls">L neutre</span><span class="barr">→</span><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L ↗ ou ↖</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Le sprint boost — R1 → R2 quasi instantané</div><div class="sd">Dribble avec R1 (controlled sprint). Quand tu veux exploser : lâche R1 et presse R2 immédiatement dans la même direction. Moins de 0.2 seconde entre les deux. Le défenseur en mode "attente" ne peut pas réagir assez vite.</div><div class="btns"><span class="b br1">R1</span><span class="barr">+</span><span class="b bls">L →</span><span class="barr">→ lâche R1 →</span><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L →</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Marcher volontairement pour appâter le tacle</div><div class="sd">Avance LENTEMENT (L sans R2 ni R1). Le défenseur impatient va appuyer ● pour tacler car tu sembles facile à prendre. À l'instant où tu vois l'animation de tacle partir : L neutre ou direction brusque ← ou →. Il rate, tu restes avec le ballon.</div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Le changement de direction à 90° en sprint</div><div class="sd">Tu sprintes ↑. À pleine vitesse, tourne L brusquement ← ou →. Un défenseur qui te suit en sprint a trop d'inertie pour faire le même virage — il continue tout droit 1-2 secondes. Tu l'as perdu.</div><div class="btns"><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L ↑</span><span class="barr">→ pivot brusque →</span><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L ← ou →</span></div></div></div>
+  <div class="secret"><b>Le secret du rythme :</b> Les pros font des cycles : lent (appât) → explosion (sprint boost) → lent (avant la zone de tir) → explosion (pour l'espace de tir). Si tu sprintes tout le temps, tu es prévisible. Si tu alternes, le défenseur ne sait jamais ce qui arrive.</div>
+</div>
+<div class="diffgrid">
+  <div class="dc dcbad"><div class="dct" style="color:var(--red)">❌ Joueur moyen</div><div class="dci">Sprint R2 tout le temps</div><div class="dci">Même vitesse du début à la fin</div><div class="dci">Fonce direct sur le défenseur</div><div class="dci">Prévisible — défenseur s'adapte</div></div>
+  <div class="dc dcgood"><div class="dct" style="color:var(--green)">✓ Joueur pro</div><div class="dci">Alterne R1, R2, marche, arrêt</div><div class="dci">Accélère et freine selon la situation</div><div class="dci">Appâte d'abord, explose ensuite</div><div class="dci">Imprévisible — défenseur toujours en retard</div></div>
+</div>
+</div><!-- avance-rythme -->
+
+<div id="avance-espace" class="ipanel">
+<div class="card">
+  <div class="ctitle">Créer l'espace <span class="tag t-elite">Ce que font les pros sans ballon</span></div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">80% des espaces sont créés AVANT de recevoir le ballon. Un pro ne reçoit jamais le ballon face à un défenseur collé — parce qu'il a déjà créé l'espace avant.</p>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Le mouvement d'appel leurre</div><div class="sd">Tu n'as pas le ballon. Pars vers ↖ pendant 2 secondes. Le défenseur te suit. Puis BRUSQUEMENT pars vers ↗. Tu as créé un espace à ↗ car il est encore en train de revenir. Demande le ballon là (L1).</div><div class="btns"><span class="b bls">L ↖</span><span class="barr">(2 sec, faux appel)</span><span class="barr">→</span><span class="b bls">L ↗</span><span class="barr">(vrai appel)</span><span class="barr">+</span><span class="b bl1">L1</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">La course de leurre pour ouvrir l'espace à un coéquipier</div><div class="sd">Sprint vers ↑ (dans le dos de la défense) avec R2. Même si tu ne reçois pas le ballon, ton sprint force le défenseur à reculer avec toi. Ça crée un espace au milieu que ton coéquipier peut exploiter. Tu n'es pas le receveur — tu es le créateur d'espace.</div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Orienter la réception AVANT que le ballon arrive</div><div class="sd">Quand le ballon est en chemin, dirige L dans la direction où tu veux repartir AVANT qu'il touche le pied de ton joueur. Tu gagnes 0.5 seconde sur le défenseur — énorme dans une surface. La plupart orientent L APRÈS la réception.</div><div class="btns"><span class="b bls">L (direction voulue)</span><span class="barr">orienté AVANT réception</span></div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Se placer entre les lignes — la position invisible</div><div class="sd">Entre la ligne de milieu adverse et la ligne défensive, il y a une zone que les IA ne couvrent pas bien. Positionne-toi là (L neutre ou léger L ↑). Tu reçois le ballon sans pression immédiate.</div></div></div>
+  <div class="secret"><b>Principe fondamental :</b> Un bon joueur ne reçoit JAMAIS le ballon face à un défenseur collé. Si ça t'arrive systématiquement, c'est que tes mouvements SANS ballon sont mauvais. Travaille d'abord les déplacements sans ballon — c'est 70% du niveau.</div>
+</div>
+</div><!-- avance-espace -->
+
+<div id="avance-sprint" class="ipanel">
+<div class="card">
+  <div class="ctitle">Le sprint boost et le dribble R1 <span class="tag t-op">OP</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Le dribble R1 — ballon collé aux pieds</div><div class="sd">Maintiens R1 + L. Ton joueur avance vite mais le ballon reste très proche de ses pieds. Si un défenseur essaie de tacler, le ballon est trop près pour qu'il l'atteigne sans tacler ton joueur (faute probable). À utiliser dans la surface et dans les espaces étroits.</div><div class="btns"><span class="b br1">R1</span><span class="barr">+</span><span class="b bls">L (direction)</span><span class="barr">→ ballon collé aux pieds</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Le sprint boost — l'explosion qui tue les défenseurs</div><div class="sd">Tu dribbles avec R1. Lâche R1 et presse R2 dans la même direction en moins de 0.2 seconde. Ton joueur part en accélération brutale. Le défenseur en mode "attente" ne peut pas répondre assez vite.</div><div class="btns"><span class="b br1">R1</span><span class="barr">+</span><span class="b bls">L →</span><span class="barr">→ lâche R1 →</span><span class="b br2">R2</span><span class="barr">+</span><span class="b bls">L →</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Le strafe face au but (L1 + L latéral)</div><div class="sd">Dans la surface, maintiens L1 + L ← ou →. Ton joueur glisse latéralement tout en RESTANT FACE AU BUT. Tu peux tirer à tout moment. Le défenseur doit choisir : couvrir le côté ou le centre.</div><div class="btns"><span class="b bl1">L1</span><span class="barr">+</span><span class="b bls">L ← ou →</span><span class="barr">→ puis</span><span class="b br1">R1</span><span class="barr">+</span><span class="b bo">●</span></div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">R2 vs R1 — quand utiliser lequel</div><div class="sd">R2 : espace libre, loin des défenseurs, contre-attaque. R1 : dans la surface, près d'un défenseur, espaces réduits. Ne confonds JAMAIS les deux.</div></div></div>
+  <div class="secret"><b>Combo ultime sans joystick droit :</b> L1 strafe ← (défenseur suit) → sprint boost R1→R2 vers ↗ (direction opposée) → dans la surface → R1 + L coin + ● (finesse). Quasi indéfendable et utilise zéro joystick droit.</div>
+</div>
+</div><!-- avance-sprint -->
+
+<div id="avance-passes-pro" class="ipanel">
+<div class="card">
+  <div class="ctitle">Les passes de haut niveau <span class="tag t-elite">Ce que les pros font différemment</span></div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">Un pro ne passe pas seulement — il orchestre. Chaque passe a un but précis : progresser, créer un mouvement adverse, ou préparer le coup suivant.</p>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">La passe en première touche — l'arme n°1</div><div class="sd">Avant que le ballon touche ton joueur, tu appuies déjà sur ✕ ou △. Ton joueur passe EN PREMIÈRE TOUCHE sans contrôler. Le défenseur n'a pas le temps de fermer l'espace.</div><div class="btns"><span class="b bls">L (vers coéquipier)</span><span class="barr">+ appuie</span><span class="b bx">✕</span><span class="barr">AVANT que le ballon arrive</span></div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Passer dans l'espace, pas vers le joueur</div><div class="sd">Un joueur moyen passe VERS le coéquipier. Un pro passe DANS L'ESPACE où le coéquipier va être dans 2 secondes. L vers la zone vide + △. Le défenseur regardait le joueur, pas l'espace.</div><div class="btns"><span class="b bls">L (vers l'espace futur)</span><span class="barr">+</span><span class="b bt">△</span></div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Le triangle de passes — casser les lignes en 3 touches</div><div class="sd">A (toi) → passe à B → B en première touche passe à C (devant) → C est libre face au but. Chaque passe en première touche. L'adversaire ne peut pas fermer 3 espaces simultanément.</div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">La passe dosée</div><div class="sd">Appui bref sur ✕ = passe douce proche. Appui long = passe forte loin. Une passe trop forte dans les pieds d'un coéquipier = il perd le contrôle. Dose chaque passe selon la distance.</div></div></div>
+  <div class="secret"><b>Le vrai secret des passes pro :</b> La passe n'est pas là pour se débarrasser du ballon — elle est là pour DÉPLACER la défense. Chaque passe doit forcer au moins un défenseur adverse à bouger. Si ta passe ne force personne à bouger, tu as perdu une possession.</div>
+</div>
+</div><!-- avance-passes-pro -->
+
+<div id="avance-lecture" class="ipanel">
+<div class="card">
+  <div class="ctitle">Lire le jeu <span class="tag t-elite">Ce que les pros voient</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Regarder AVANT de recevoir — les 3 questions</div><div class="sd">Pendant que le ballon est en chemin : (1) Combien de défenseurs autour de moi ? (2) Quel coéquipier est le plus libre ? (3) Un attaquant est-il déjà en course ? Si tu réponds avant de toucher le ballon, ta décision est déjà prise — tu joues instantanément.</div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Utiliser le radar en permanence</div><div class="sd">Le radar montre les joueurs hors de ton champ visuel. Si tu vois sur le radar un coéquipier libre sur l'aile droite mais que l'écran montre le milieu → ■ ou △ vers lui. Le changement d'aile déplace toute la défense.</div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Lire les épaules du porteur adverse</div><div class="sd">Quand tu défends, regarde comment le porteur adverse oriente son corps. Épaules ouvertes vers ↗ → passe part vers ta gauche → switch vers ce côté AVANT qu'il passe. Tu interceptes au lieu de courir après.</div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">Reconnaître les patterns répétitifs</div><div class="sd">Après 5-6 minutes, identifie 2-3 patterns de l'adversaire : il va toujours à droite, il fait toujours le même une-deux. Une fois identifié, tu te places AVANT que ça arrive. Tu n'es plus en réaction — tu es en anticipation.</div></div></div>
+  <div class="secret"><b>Ce que regardent vraiment les pros :</b> Pas le ballon — les espaces entre les joueurs. L'espace vide est plus important que le joueur qui a le ballon. Quand tu regardes l'espace, tu vois 2-3 coups à l'avance.</div>
+</div>
+</div><!-- avance-lecture -->
+
+<div id="avance-tactique" class="ipanel">
+<div class="card">
+  <div class="ctitle">Tactique équipe — réglages qui changent les matchs <span class="tag t-meta">Fondamental</span></div>
+  <div class="step"><div class="sn">1</div><div class="sb"><div class="sa">Profondeur défensive à 61 — pourquoi ce chiffre</div><div class="sd">En dessous de 50 : ta défense est trop basse, trop d'espace au milieu. Au-dessus de 70 : trop risqué aux passes dans le dos. À 61 : tes défenseurs montent bien, ferment l'espace entre les lignes, déclenchent des pièges hors-jeu sur les passes en profondeur.</div></div></div>
+  <div class="step"><div class="sn">2</div><div class="sb"><div class="sa">Instructions individuelles qui créent des espaces automatiquement</div><div class="sd">"Get In Behind" sur 1 attaquant → il sprint toujours dans le dos de la défense → étire la défense → espace au milieu. "Stay Back" sur 1 milieu → jamais de contre rapide. "Cover Center" sur CDM/CB → ferme l'axe central automatiquement.</div></div></div>
+  <div class="step"><div class="sn">3</div><div class="sb"><div class="sa">Changer de tactique selon le score</div><div class="sd">Si tu mènes : profondeur à 45, plus de "Stay Back", jeu lent. Si tu es mené : profondeur à 70-75, "Get In Behind" sur tous les attaquants, jeu direct avec △. 0-0 à 60 min : presse plus haut (R1+L2 ensemble).</div></div></div>
+  <div class="step"><div class="sn">4</div><div class="sb"><div class="sa">La surcharge — créer un 3v2 systématiquement</div><div class="sd">3 joueurs côté gauche → l'adversaire surcharge à gauche → l'aile droite est dégarnie → changement d'aile rapide → ton ailier droit est seul face à un défenseur fatigué qui revient. C'est le principe des pros : surcharger d'un côté pour exploiter de l'autre.</div></div></div>
+  <div class="secret"><b>Le principe d'équipe des pros :</b> Une bonne équipe joue comme un organisme vivant — quand le ballon va à gauche, les 10 autres joueurs bougent à gauche automatiquement. Ça s'obtient avec les bons rôles et les bonnes instructions. Quand ton équipe "comprend" ta tactique, tu joues à 11 contre 11 vraiment.</div>
+</div>
+</div><!-- avance-tactique -->
+
+</div><!-- sec-avance -->
+</div><!-- wrap -->
+
+<script>
+// ============================================================
+// SKILL MOVES DATA
+// ============================================================
+const HOLD_ZONES = [
+  {from:-20,to:20,name:"Flick Over",color:"#2a2208",stroke:"#BA7517",stars:5},
+  {from:20,to:55,name:"ZONE IMPRÉCISE",color:"#2a0808",stroke:"#E24B4A",stars:0},
+  {from:55,to:125,name:"BALL ROLL droite",color:"#082a1a",stroke:"#1D9E75",stars:2},
+  {from:125,to:160,name:"ZONE IMPRÉCISE",color:"#2a0808",stroke:"#E24B4A",stars:0},
+  {from:160,to:200,name:"Quick Ball Rolls",color:"#1a1a1a",stroke:"#888780",stars:4},
+  {from:200,to:235,name:"ZONE IMPRÉCISE",color:"#2a0808",stroke:"#E24B4A",stars:0},
+  {from:235,to:305,name:"BALL ROLL gauche",color:"#082a1a",stroke:"#1D9E75",stars:2},
+  {from:305,to:340,name:"ZONE IMPRÉCISE",color:"#2a0808",stroke:"#E24B4A",stars:0},
+  {from:340,to:380,name:"Flick Over",color:"#2a2208",stroke:"#BA7517",stars:5},
+];
+const FLICK_ZONES = [
+  {from:-22,to:22,name:"Heel to Heel",color:"#2a0a14",stroke:"#D4537E",stars:3},
+  {from:22,to:68,name:"Stepover zone",color:"#0a1a2a",stroke:"#378ADD",stars:2},
+  {from:68,to:112,name:"Body Feint droite",color:"#1a1030",stroke:"#7F77DD",stars:2},
+  {from:112,to:158,name:"Stepover zone",color:"#0a1a2a",stroke:"#378ADD",stars:2},
+  {from:158,to:202,name:"Feint Fwd & Turn",color:"#1a1a1a",stroke:"#888780",stars:2},
+  {from:202,to:248,name:"Stepover zone",color:"#0a1a2a",stroke:"#378ADD",stars:2},
+  {from:248,to:292,name:"Body Feint gauche",color:"#1a1030",stroke:"#7F77DD",stars:2},
+  {from:292,to:338,name:"Stepover zone",color:"#0a1a2a",stroke:"#378ADD",stars:2},
+  {from:338,to:382,name:"Heel to Heel",color:"#2a0a14",stroke:"#D4537E",stars:3},
+];
+const SCREEN_NAMES=["Haut","Haut-Droite","Droite","Bas-Droite","Bas","Bas-Gauche","Gauche","Haut-Gauche"];
+const PLAYER_NAMES=["Avant","Avant-Droite","Droite","Arrière-Droite","Arrière","Arrière-Gauche","Gauche","Avant-Gauche"];
+const DIRS=[{a:0,l:"↑"},{a:45,l:"↗"},{a:90,l:"→"},{a:135,l:"↘"},{a:180,l:"↓"},{a:225,l:"↙"},{a:270,l:"←"},{a:315,l:"↖"}];
+const STAR_COLORS={
+  1:{bg:"rgba(241,239,232,.08)",border:"#B4B2A9",text:"#B4B2A9"},
+  2:{bg:"rgba(225,245,238,.08)",border:"#5DCAA5",text:"#5DCAA5"},
+  3:{bg:"rgba(230,241,251,.08)",border:"#85B7EB",text:"#85B7EB"},
+  4:{bg:"rgba(238,237,254,.1)",border:"#AFA9EC",text:"#AFA9EC"},
+  5:{bg:"rgba(250,238,218,.1)",border:"#FAC775",text:"#FAC775"},
+};
+const ALL_MOVES=[
+  {name:"Body Feint Droite",stars:2,type:"flick",desc:"Feinte du corps vers la droite",tip:"FLICK RAPIDE RS vers la droite du joueur. Si ball roll sort = tu maintiens trop.",zone:{relFrom:68,relTo:112},stepsRel:null},
+  {name:"Body Feint Gauche",stars:2,type:"flick",desc:"Feinte du corps vers la gauche",tip:"FLICK RAPIDE RS vers la gauche du joueur.",zone:{relFrom:248,relTo:292},stepsRel:null},
+  {name:"Ball Roll Droite",stars:2,type:"hold",desc:"Roulade du ballon vers la droite",tip:"MAINTENIR RS vers la droite du joueur (zone 55-125°). PAS de diagonale !",zone:{relFrom:55,relTo:125},stepsRel:null},
+  {name:"Ball Roll Gauche",stars:2,type:"hold",desc:"Roulade du ballon vers la gauche",tip:"MAINTENIR RS vers la gauche du joueur (zone 235-305°). PAS de diagonale !",zone:{relFrom:235,relTo:305},stepsRel:null},
+  {name:"Stepover Droite",stars:2,type:"roll",desc:"Passement de jambe droite — demi-cercle avant→droite",tip:"Demi-cercle RS avant vers droite du joueur. Enchaîne R2.",stepsRel:[0,90]},
+  {name:"Stepover Gauche",stars:2,type:"roll",desc:"Passement de jambe gauche — demi-cercle avant→gauche",tip:"Demi-cercle RS avant vers gauche du joueur.",stepsRel:[0,270]},
+  {name:"Feint Forward & Turn",stars:2,type:"flick",desc:"Feinte avant + demi-tour",tip:"Double flick RS vers l'arrière du joueur.",zone:{relFrom:158,relTo:202},stepsRel:null},
+  {name:"Drag Back",stars:2,type:"press",desc:"Tire le ballon en arrière — L1+R1 + LS arrière",tip:"L1+R1 + LS vers l'arrière du joueur.",stepsRel:null},
+  {name:"Stop and Go",stars:2,type:"flick",desc:"Arrêt puis accélération — L2+RS",tip:"L2 + RS arrière puis avant du joueur.",stepsRel:[180,0]},
+  {name:"Heel to Heel",stars:3,type:"flick",desc:"Accélération talon-pointe",tip:"Flick RS avant puis arrière du joueur. Lâche R2 avant !",zone:{relFrom:-22,relTo:22},stepsRel:[0,180]},
+  {name:"Roulette Droite",stars:3,type:"roll",desc:"Rotation 270° sens horaire",tip:"RS : arrière puis droite du joueur.",stepsRel:[180,90]},
+  {name:"Roulette Gauche",stars:3,type:"roll",desc:"Rotation 270° sens anti-horaire",tip:"RS : arrière puis gauche du joueur.",stepsRel:[180,270]},
+  {name:"Fake Left & Go Right",stars:3,type:"roll",desc:"Feinte gauche, départ droite",tip:"Demi-cercle : gauche vers droite (par l'avant).",stepsRel:[270,90]},
+  {name:"Fake Right & Go Left",stars:3,type:"roll",desc:"Feinte droite, départ gauche",tip:"Demi-cercle : droite vers gauche (par l'avant).",stepsRel:[90,270]},
+  {name:"La Croqueta",stars:4,type:"hold",desc:"Glissement latéral explosif — L1+RS",tip:"L1 + maintenir RS gauche ou droite. Quasi indéfendable dans la surface.",zone:{relFrom:55,relTo:125},stepsRel:null},
+  {name:"Quick Ball Rolls",stars:4,type:"hold",desc:"Ball rolls rapides arrière",tip:"Maintenir RS arrière du joueur.",zone:{relFrom:160,relTo:200},stepsRel:null},
+  {name:"Simple Rainbow",stars:4,type:"flick",desc:"Arc-en-ciel par-dessus",tip:"Flick RS arrière puis avant.",stepsRel:[180,0]},
+  {name:"Stop & Turn Gauche",stars:4,type:"flick",desc:"Arrêt + départ gauche",tip:"Flick RS avant puis gauche.",stepsRel:[0,270]},
+  {name:"Stop & Turn Droite",stars:4,type:"flick",desc:"Arrêt + départ droite",tip:"Flick RS avant puis droite.",stepsRel:[0,90]},
+  {name:"Drag Back Spin G.",stars:4,type:"flick",desc:"Drag back + spin gauche",tip:"Flick RS arrière puis gauche.",stepsRel:[180,270]},
+  {name:"Drag Back Spin D.",stars:4,type:"flick",desc:"Drag back + spin droite",tip:"Flick RS arrière puis droite.",stepsRel:[180,90]},
+  {name:"Elastico",stars:5,type:"roll",desc:"Flip flap légendaire — le move le plus rapide",tip:"Demi-cercle : droite vers gauche (par le bas).",stepsRel:[90,270]},
+  {name:"Reverse Elastico",stars:5,type:"roll",desc:"Elastico inverse",tip:"Demi-cercle : gauche vers droite (par le bas).",stepsRel:[270,90]},
+  {name:"Advanced Rainbow",stars:5,type:"flick",desc:"Arc-en-ciel avancé",tip:"Flick arrière, maintenir avant, flick avant.",stepsRel:[180,0,0]},
+  {name:"Ball Roll Fake G.",stars:5,type:"hold",desc:"Feinte ball roll gauche",tip:"Maintenir RS gauche puis flick droite.",stepsRel:[270,90]},
+  {name:"Ball Roll Fake D.",stars:5,type:"hold",desc:"Feinte ball roll droite",tip:"Maintenir RS droite puis flick gauche.",stepsRel:[90,270]},
+  {name:"Flick Over",stars:5,type:"hold",desc:"Lob par-dessus (maintenir RS avant)",tip:"Maintenir RS vers l'avant du joueur.",zone:{relFrom:-20,relTo:20},stepsRel:null},
+];
+
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+let playerAngle = 0;   // current LS direction (degrees)
+let zoneMode = 'flick'; // 'flick' or 'hold'
+let openMoveId = null;
+
+// ============================================================
+// CANVAS DRAWING
+// ============================================================
+function findZone(relDeg, zones) {
+  let r = ((relDeg % 360) + 360) % 360;
+  for (let z of zones) {
+    let s = ((z.from % 360) + 360) % 360;
+    if (z.from < 0) { if (r >= (360 + z.from) || r < z.to) return z; }
+    else if (z.to > 360) { if (r >= s || r < (z.to - 360)) return z; }
+    else { if (r >= s && r < z.to) return z; }
+  }
+  return null;
+}
+function relToScreen(rel, pa) { return ((rel + pa) % 360 + 360) % 360; }
+
+function drawCanvas(canvasId, pa, zones, highlightZone, stepsRel, touchAngle) {
+  const c = document.getElementById(canvasId);
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const W=280, H=280, cx=140, cy=140, R=108;
+  ctx.clearRect(0,0,W,H);
+
+  // Draw zones
+  zones.forEach(z => {
+    const s = (z.from + pa - 90) * Math.PI / 180;
+    const e = (z.to + pa - 90) * Math.PI / 180;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,s,e); ctx.closePath();
+    const hl = highlightZone && z.from >= highlightZone.relFrom-1 && z.to <= highlightZone.relTo+1;
+    ctx.globalAlpha = hl ? 1 : 0.5;
+    ctx.fillStyle = z.color; ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = z.stroke; ctx.lineWidth = hl ? 2 : 0.8; ctx.stroke();
+  });
+
+  // Highlight arc
+  if (highlightZone) {
+    const hs = (highlightZone.relFrom + pa - 90) * Math.PI / 180;
+    const he = (highlightZone.relTo + pa - 90) * Math.PI / 180;
+    ctx.beginPath(); ctx.arc(cx,cy,R,hs,he);
+    ctx.strokeStyle = "#7f77dd"; ctx.lineWidth = 4; ctx.stroke();
+  }
+
+  // Outer circle
+  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+  ctx.strokeStyle = "rgba(144,144,160,0.3)"; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Cardinal labels
+  const labels = ["HAUT","DROITE","BAS","GAUCHE"];
+  labels.forEach((t,i) => {
+    const a = (i*90-90)*Math.PI/180;
+    ctx.fillStyle = "rgba(144,144,160,0.5)"; ctx.font = "500 10px 'Barlow Condensed',sans-serif";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(t, cx+Math.cos(a)*(R+16), cy+Math.sin(a)*(R+16));
+  });
+
+  // Zone labels
+  zones.forEach(z => {
+    if (z.name.includes("IMPR")) return;
+    const mid = ((z.from+z.to)/2+pa-90)*Math.PI/180;
+    ctx.fillStyle = z.stroke; ctx.font = "600 9px 'Barlow',sans-serif";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    const nm = z.name.length>16 ? z.name.substring(0,14)+".." : z.name;
+    ctx.fillText(nm, cx+Math.cos(mid)*R*0.67, cy+Math.sin(mid)*R*0.67);
+    if (z.stars>0) {
+      ctx.font = "400 8px sans-serif";
+      ctx.fillText("★".repeat(z.stars), cx+Math.cos(mid)*R*0.67, cy+Math.sin(mid)*R*0.67+11);
+    }
+  });
+
+  // Player direction indicator
+  const pRad = (pa-90)*Math.PI/180;
+  ctx.beginPath(); ctx.setLineDash([5,4]);
+  ctx.moveTo(cx+Math.cos(pRad)*16, cy+Math.sin(pRad)*16);
+  ctx.lineTo(cx+Math.cos(pRad)*(R-6), cy+Math.sin(pRad)*(R-6));
+  ctx.strokeStyle = "#7f77dd"; ctx.lineWidth = 2; ctx.stroke(); ctx.setLineDash([]);
+  // Label
+  ctx.fillStyle = "#7f77dd"; ctx.font = "700 10px 'Barlow Condensed',sans-serif";
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.fillText("JOUEUR", cx+Math.cos(pRad)*R*0.42, cy+Math.sin(pRad)*R*0.42);
+
+  // Steps (numbered dots with arrows)
+  if (stepsRel && stepsRel.length > 0) {
+    const cols = ["#7f77dd","#1D9E75","#BA7517"];
+    stepsRel.forEach((rel, i) => {
+      const abs = relToScreen(rel, pa);
+      const rad = (abs-90)*Math.PI/180;
+      const ex = cx+Math.cos(rad)*R*0.82, ey = cy+Math.sin(rad)*R*0.82;
+      if (i>0) {
+        const pA = relToScreen(stepsRel[i-1],pa);
+        const pR = (pA-90)*Math.PI/180;
+        ctx.beginPath(); ctx.setLineDash([4,3]);
+        ctx.moveTo(cx+Math.cos(pR)*R*0.82, cy+Math.sin(pR)*R*0.82);
+        ctx.lineTo(ex,ey);
+        ctx.strokeStyle = cols[i]||"#7f77dd"; ctx.lineWidth=2; ctx.stroke(); ctx.setLineDash([]);
+      }
+      ctx.beginPath(); ctx.arc(ex,ey,13,0,Math.PI*2);
+      ctx.fillStyle = cols[i]||"#7f77dd"; ctx.fill();
+      ctx.fillStyle="#fff"; ctx.font="700 12px 'Barlow',sans-serif";
+      ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(String(i+1),ex,ey+1);
+    });
+  }
+
+  // Center dot
+  ctx.beginPath(); ctx.arc(cx,cy,11,0,Math.PI*2);
+  ctx.fillStyle="rgba(50,50,60,0.9)"; ctx.fill();
+  ctx.fillStyle="rgba(144,144,160,0.6)"; ctx.font="500 10px 'Barlow',sans-serif";
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.fillText("RS",cx,cy);
+
+  // Touch line
+  if (touchAngle !== null) {
+    const tR = (touchAngle-90)*Math.PI/180;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(tR)*R, cy+Math.sin(tR)*R);
+    ctx.strokeStyle="rgba(255,255,255,0.7)"; ctx.lineWidth=2; ctx.stroke();
+  }
+}
+
+// ============================================================
+// DIRECTION PICKER (shared)
+// ============================================================
+function buildDirPicker(containerId, onChange) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const positions = [
+    {a:315,t:"2%",l:"2%"},{a:0,t:"2%",l:"50%"},{a:45,t:"2%",l:"98%"},
+    {a:270,t:"50%",l:"2%"},                         {a:90,t:"50%",l:"98%"},
+    {a:225,t:"98%",l:"2%"},{a:180,t:"98%",l:"50%"},{a:135,t:"98%",l:"98%"},
+  ];
+  // Center label
+  const center = document.createElement('div');
+  center.style.cssText = `position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text2);font-family:var(--fh)`;
+  center.textContent = 'LS';
+  el.appendChild(center);
+  positions.forEach(p => {
+    const d = DIRS.find(d=>d.a===p.a);
+    const btn = document.createElement('button');
+    btn.dataset.angle = p.a;
+    btn.style.cssText = `position:absolute;top:${p.t};left:${p.l};transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--text2);border:1.5px solid var(--border);transition:all .15s;font-family:sans-serif`;
+    btn.textContent = d.l;
+    btn.onclick = () => {
+      el.querySelectorAll('button').forEach(b => {
+        b.style.background='var(--bg3)'; b.style.color='var(--text2)'; b.style.borderColor='var(--border)';
+      });
+      btn.style.background='#534AB7'; btn.style.color='#fff'; btn.style.borderColor='#534AB7';
+      onChange(p.a);
+    };
+    el.appendChild(btn);
+  });
+  // Set initial state (angle 0 = top)
+  const initBtn = el.querySelector('[data-angle="0"]');
+  if (initBtn) { initBtn.style.background='#534AB7'; initBtn.style.color='#fff'; initBtn.style.borderColor='#534AB7'; }
+}
+
+// ============================================================
+// ZONE CANVAS (testeur)
+// ============================================================
+let zoneTouchAngle = null;
+
+function initZoneCanvas() {
+  const c = document.getElementById('zone-canvas');
+  if (!c) return;
+  const handler = (e) => {
+    const rect = c.getBoundingClientRect();
+    const sx = 280/rect.width, sy = 280/rect.height;
+    const cx2 = (e.clientX-rect.left)*sx-140, cy2 = (e.clientY-rect.top)*sy-140;
+    if (Math.sqrt(cx2*cx2+cy2*cy2)<14) return;
+    zoneTouchAngle = ((Math.atan2(cy2,cx2)*180/Math.PI)+90+360)%360;
+    redrawZoneCanvas();
+    // Show info
+    const rel = ((zoneTouchAngle - playerAngle)+360)%360;
+    const zones = zoneMode==='hold' ? HOLD_ZONES : FLICK_ZONES;
+    const z = findZone(rel, zones);
+    const sI = Math.round(zoneTouchAngle/45)%8;
+    const pI = Math.round(rel/45)%8;
+    const info = document.getElementById('zone-info');
+    if (info && z) {
+      info.style.display='block';
+      info.innerHTML = `<div style="background:${z.color};padding:9px 12px;border-left:3px solid ${z.stroke};border-radius:0 var(--radius) var(--radius) 0">
+        <div style="font-size:14px;font-weight:700;color:${z.stroke};margin-bottom:3px">${z.name}${z.stars>0?' ('+z.stars+'★)':''}</div>
+        <div style="font-size:12px;color:var(--text2)">Écran: ${SCREEN_NAMES[sI]} | Joueur: ${PLAYER_NAMES[pI]} | ${Math.round(rel)}°${z.name.includes('IMPR')?' — DIAGONALE ! Décale ton stick.':''}</div>
+      </div>`;
+    }
+  };
+  c.addEventListener('pointerdown', handler);
+  c.addEventListener('pointermove', e => { if(e.buttons>0) handler(e); });
+}
+
+function redrawZoneCanvas() {
+  const zones = zoneMode==='hold' ? HOLD_ZONES : FLICK_ZONES;
+  drawCanvas('zone-canvas', playerAngle, zones, null, null, zoneTouchAngle);
+}
+
+function setZoneMode(mode, btn) {
+  zoneMode = mode;
+  zoneTouchAngle = null;
+  document.getElementById('zone-info').style.display='none';
+  document.querySelectorAll('#skills-testeur .itab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  redrawZoneCanvas();
+}
+
+// ============================================================
+// MOVE CANVAS (per move)
+// ============================================================
+function getMoveTouchHandler(canvasId, move) {
+  let touchAngle = null;
+  const c = document.getElementById(canvasId);
+  if (!c) return;
+  const isHold = move.type==='hold';
+  const zones = isHold ? HOLD_ZONES : FLICK_ZONES;
+  const handler = (e) => {
+    const rect = c.getBoundingClientRect();
+    const sx = 280/rect.width, sy = 280/rect.height;
+    const cx2 = (e.clientX-rect.left)*sx-140, cy2=(e.clientY-rect.top)*sy-140;
+    if (Math.sqrt(cx2*cx2+cy2*cy2)<14) return;
+    touchAngle = ((Math.atan2(cy2,cx2)*180/Math.PI)+90+360)%360;
+    drawCanvas(canvasId, playerAngle, zones, move.zone||null, move.stepsRel||null, touchAngle);
+  };
+  c.addEventListener('pointerdown', handler);
+  c.addEventListener('pointermove', e=>{if(e.buttons>0) handler(e);});
+}
+
+function redrawAllOpenMoveCanvases() {
+  ALL_MOVES.forEach((move, i) => {
+    const cid = 'mc-'+i;
+    const c = document.getElementById(cid);
+    if (!c) return;
+    const isHold = move.type==='hold';
+    const zones = isHold ? HOLD_ZONES : FLICK_ZONES;
+    drawCanvas(cid, playerAngle, zones, move.zone||null, move.stepsRel||null, null);
+  });
+}
+
+// ============================================================
+// BUILD MOVES LIST
+// ============================================================
+function buildMovesList() {
+  const container = document.getElementById('moves-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  ALL_MOVES.forEach((move, i) => {
+    const sc = STAR_COLORS[move.stars];
+    const typeLabel = move.type==='hold'?'TENIR':move.type==='roll'?'ROTATION':'FLICK';
+    const typeClass = move.type==='hold'?'ty-hold':move.type==='roll'?'ty-roll':'ty-flick';
+    const cid = 'mc-'+i;
+    const isHold = move.type==='hold';
+
+    const card = document.createElement('div');
+    card.className = 'movecard';
+    card.dataset.stars = move.stars;
+    card.dataset.moveid = i;
+
+    // Build steps HTML
+    let stepsHtml = '';
+    if (move.stepsRel && move.stepsRel.length > 0) {
+      const cols = ['#7f77dd','#1D9E75','#BA7517'];
+      const stepNames = move.stepsRel.map((rel, si) => {
+        const abs = relToScreen(rel, playerAngle);
+        const idx = Math.round(abs/45)%8;
+        return `<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;background:${si===0?'rgba(127,119,221,.1)':'rgba(29,158,117,.1)'};border-radius:var(--radius);padding:8px 10px">
+          <div style="min-width:24px;height:24px;border-radius:50%;background:${cols[si]};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${si+1}</div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:${cols[si]}">Input ${si+1}</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:1px">= ${SCREEN_NAMES[idx]} sur ton écran</div>
+          </div>
+        </div>`;
+      });
+      stepsHtml = `<div style="margin-bottom:8px">${stepNames.join('')}</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="movehdr" onclick="toggleMoveCard(${i})">
+        <span class="movestars" style="background:${sc.bg};color:${sc.text};border:1px solid ${sc.border}">${'★'.repeat(move.stars)}</span>
+        <span class="movename">${move.name}</span>
+        <span class="movetype ${typeClass}">${typeLabel}</span>
+      </div>
+      <div class="movedesc" onclick="toggleMoveCard(${i})">${move.desc}</div>
+      <div class="movebody" id="mb-${i}">
+        <div style="margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-align:center">Joystick droit — joueur face à ${DIRS.find(d=>d.a===playerAngle)?.l||'↑'}</div>
+          <canvas id="${cid}" width="280" height="280" style="width:100%;max-width:280px;display:block;margin:0 auto;cursor:crosshair;touch-action:none"></canvas>
+        </div>
+        ${stepsHtml}
+        <div style="background:${sc.bg};border-radius:var(--radius);padding:9px 12px;border-left:3px solid ${sc.border}">
+          <div style="font-size:11px;font-weight:700;color:${sc.text};margin-bottom:3px">Conseil</div>
+          <div style="font-size:12px;color:${sc.text};line-height:1.6">${move.tip}</div>
+        </div>
+      </div>`;
+
+    container.appendChild(card);
+  });
+}
+
+function toggleMoveCard(i) {
+  const body = document.getElementById('mb-'+i);
+  const card = document.querySelector(`[data-moveid="${i}"]`);
+  if (!body || !card) return;
+  const isOpen = card.classList.contains('on');
+
+  // Close all others
+  document.querySelectorAll('#moves-list .movecard.on').forEach(c => {
+    c.classList.remove('on');
+    const b = c.querySelector('.movebody');
+    if (b) b.style.display='none';
+  });
+
+  if (!isOpen) {
+    card.classList.add('on');
+    body.style.display='block';
+    // Draw canvas
+    const move = ALL_MOVES[i];
+    const isHold = move.type==='hold';
+    const zones = isHold ? HOLD_ZONES : FLICK_ZONES;
+    setTimeout(() => {
+      drawCanvas('mc-'+i, playerAngle, zones, move.zone||null, move.stepsRel||null, null);
+      getMoveTouchHandler('mc-'+i, move);
+    }, 20);
+  }
+}
+
+// ============================================================
+// FILTER MOVES
+// ============================================================
+function filterMoves(stars, btn) {
+  document.querySelectorAll('#moves-list .movecard.on').forEach(c=>{ c.classList.remove('on'); const b=c.querySelector('.movebody');if(b)b.style.display='none';});
+  const btns = btn.closest('.filters').querySelectorAll('.filt');
+  btns.forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  document.querySelectorAll('#moves-list .movecard').forEach(card => {
+    card.style.display = (stars==='all' || card.dataset.stars===stars) ? '' : 'none';
+  });
+}
+
+// ============================================================
+// GLOBAL PLAYER ANGLE CHANGE
+// ============================================================
+function onPlayerAngleChange(angle) {
+  playerAngle = angle;
+  zoneTouchAngle = null;
+  const info = document.getElementById('zone-info');
+  if (info) info.style.display='none';
+  redrawZoneCanvas();
+  // Rebuild move labels & redraw open canvases
+  ALL_MOVES.forEach((move, i) => {
+    const body = document.getElementById('mb-'+i);
+    if (!body || body.style.display==='none') return;
+    // Update direction label
+    const lbl = body.querySelector('[data-dirlbl]');
+    if (lbl) lbl.textContent = `Joystick droit — joueur face à ${DIRS.find(d=>d.a===angle)?.l||'↑'}`;
+    // Redraw canvas
+    const isHold = move.type==='hold';
+    const zones = isHold ? HOLD_ZONES : FLICK_ZONES;
+    drawCanvas('mc-'+i, playerAngle, zones, move.zone||null, move.stepsRel||null, null);
+    // Rebuild steps
+    if (move.stepsRel) {
+      const cols = ['#7f77dd','#1D9E75','#BA7517'];
+      const sc = STAR_COLORS[move.stars];
+      move.stepsRel.forEach((rel, si) => {
+        const abs = relToScreen(rel, angle);
+        const idx = Math.round(abs/45)%8;
+        const stepEl = document.getElementById(`step-${i}-${si}`);
+        if (stepEl) stepEl.textContent = `= ${SCREEN_NAMES[idx]} sur ton écran`;
+      });
+    }
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Build direction pickers
+  buildDirPicker('dir-picker', (angle) => {
+    // Sync both pickers
+    const otherPicker = document.getElementById('dir-picker-moves');
+    if (otherPicker) {
+      otherPicker.querySelectorAll('button').forEach(b => {
+        const isSelected = parseInt(b.dataset.angle)===angle;
+        b.style.background = isSelected?'#534AB7':'var(--bg3)';
+        b.style.color = isSelected?'#fff':'var(--text2)';
+        b.style.borderColor = isSelected?'#534AB7':'var(--border)';
+      });
+    }
+    onPlayerAngleChange(angle);
+  });
+  buildDirPicker('dir-picker-moves', (angle) => {
+    // Sync both pickers
+    const otherPicker = document.getElementById('dir-picker');
+    if (otherPicker) {
+      otherPicker.querySelectorAll('button').forEach(b => {
+        const isSelected = parseInt(b.dataset.angle)===angle;
+        b.style.background = isSelected?'#534AB7':'var(--bg3)';
+        b.style.color = isSelected?'#fff':'var(--text2)';
+        b.style.borderColor = isSelected?'#534AB7':'var(--border)';
+      });
+    }
+    onPlayerAngleChange(angle);
+  });
+
+  // Init zone canvas
+  initZoneCanvas();
+  redrawZoneCanvas();
+
+  // Build moves list
+  buildMovesList();
+  // Hide all movebody by default
+  document.querySelectorAll('.movebody').forEach(b => b.style.display='none');
+});
+</script>
+<script>
+function showCat(cat, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.catbtn').forEach(b => b.classList.remove('on'));
+  const sec = document.getElementById('sec-' + cat);
+  if (sec) sec.classList.add('on');
+  if (btn) btn.classList.add('on');
+  window.scrollTo(0, 0);
+}
+function showI(cat, panel, btn) {
+  const prefix = cat + '-';
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(p => p.classList.remove('on'));
+  const el = document.getElementById(cat + '-' + panel);
+  if (el) el.classList.add('on');
+  if (btn) {
+    const parent = btn.closest('.itabs');
+    if (parent) parent.querySelectorAll('.itab').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  }
+}
+function toggleSit(el) { el.classList.toggle('on'); }
+function toggleMove(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.movecard.on').forEach(m => { if (m !== el) m.classList.remove('on'); });
+  el.classList.toggle('on');
+}
+function filterPasses(cat, btn) {
+  const btns = btn.closest('.filters').querySelectorAll('.filt');
+  btns.forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('#passes-list .movecard').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.pcat === cat) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
