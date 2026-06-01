@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FC 26 — Compétitions</title>
 <link rel="manifest" href="data:application/json,{%22name%22:%22FC%2026%20Comp%C3%A9titions%22,%22short_name%22:%22FC26%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230e0e10%22,%22theme_color%22:%221db974%22}">
 <meta name="theme-color" content="#1db974">
@@ -85,7 +85,7 @@ table tr:hover td{background:var(--bg3)}
 .player-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border2)}
 .player-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--border2);color:var(--text2)}
-#screen-home{display:flex!important;flex-direction:column;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(29,185,116,.07) 0%,transparent 55%)}
+#screen-home{display:flex;flex-direction:column;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(29,185,116,.07) 0%,transparent 55%)}
 .home-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px 36px;text-align:center}
 .home-logo{width:76px;height:76px;background:linear-gradient(135deg,var(--green),#0fa968);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 22px;box-shadow:0 0 60px var(--green-glow),0 4px 24px rgba(0,0,0,.5);animation:logoPulse 3s ease infinite}
 @keyframes logoPulse{0%,100%{box-shadow:0 0 40px var(--green-glow),0 4px 24px rgba(0,0,0,.5)}50%{box-shadow:0 0 80px var(--green-glow),0 4px 24px rgba(0,0,0,.5)}}
@@ -565,8 +565,14 @@ function load(){
 }
 
 function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  // Hide all screens cleanly, then show the target with correct display type
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('active');
+    s.style.display='';
+  });
   const el=document.getElementById(id);if(!el)return;
+  // screen-home needs flex, all others need block
+  el.style.display=(id==='screen-home')?'flex':'block';
   el.classList.add('active');
   window.scrollTo(0,0);
   if(id==='screen-palmares')renderPalmares();
@@ -577,11 +583,15 @@ function switchTab(ctx,tab){
   const pre=ctx+'-tab-';
   document.querySelectorAll('[id^="'+pre+'"]').forEach(t=>t.classList.remove('active'));
   const el=document.getElementById(pre+tab);if(el)el.classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b=>{
-    const oc=b.getAttribute('onclick')||'';
-    if(oc===`switchTab('${ctx}','${tab}')`)b.classList.add('active');
-    else if(oc.startsWith(`switchTab('${ctx}'`))b.classList.remove('active');
-  });
+  // Use data attributes for reliable tab button targeting
+  const ctxEl=document.getElementById('screen-'+ctx)||document.getElementById('screen-ldc');
+  if(ctxEl){
+    ctxEl.querySelectorAll('.tab-btn').forEach(b=>{
+      const oc=b.getAttribute('onclick')||'';
+      if(oc.includes(`'${tab}'`))b.classList.add('active');
+      else if(oc.includes(`switchTab('${ctx}'`))b.classList.remove('active');
+    });
+  }
   if(ctx==='champ'){
     if(tab==='classement')renderChampClassement();if(tab==='calendrier')renderChampCalendar();
     if(tab==='resultats')renderChampResults();if(tab==='buteurs')renderChampScorers();
@@ -669,8 +679,14 @@ function launchComp(){
     const pname=(document.getElementById('pname-'+pid)||{}).value?.trim();if(!pname)return;
     const color=(document.getElementById('pcolor-'+pid)||{}).value||COLORS[0];
     const clubs=[];
-    pr.querySelectorAll(`[id^="club-${pid}-"]`).forEach(ci=>{const v=ci.value.trim();if(v)clubs.push({id:'c'+Date.now()+Math.random().toString(36).slice(2,4),name:v});});
-    pr.querySelectorAll('#pclubs-'+pid+' input[type=text]').forEach(ci=>{const v=ci.value.trim();if(v&&!clubs.some(c=>c.name===v))clubs.push({id:'c'+Date.now()+Math.random().toString(36).slice(2,4),name:v});});
+    // Single unified pass over all text inputs in the clubs container — avoids double-read bug
+    const clubsContainer=document.getElementById('pclubs-'+pid);
+    if(clubsContainer){
+      clubsContainer.querySelectorAll('input[type=text]').forEach(ci=>{
+        const v=ci.value.trim();
+        if(v&&!clubs.some(c=>c.name===v))clubs.push({id:'c'+Date.now()+Math.random().toString(36).slice(2,4),name:v});
+      });
+    }
     if(!clubs.length)return;
     players.push({id:pid,name:pname,color,clubs});clubs.forEach(c=>allClubs.push({...c,playerId:pid}));
   });
@@ -682,7 +698,7 @@ function launchComp(){
     const nbG=allClubs.length/4,maxC=Math.max(...players.map(p=>p.clubs.length));
     if(maxC>nbG){msg.textContent=`Un joueur a ${maxC} clubs mais seulement ${nbG} groupe(s).`;msg.className='vmsg err';return;}
   }
-  S.name=name;S.players=players;S.corrections=[];_mid=0;
+  S.name=name;S.players=players;S.corrections=[];_mid=0;_prevRanks={};
   if(S.mode==='champ'){S.calendar=[];buildChampCal(allClubs);save();showScreen('screen-champ');renderChampAll();toast('C\'est parti ! 🔥','green');}
   else{S.ldc={phase:'draw',groups:[],koRounds:[],pendingAET:null};save();showScreen('screen-ldc');initLDC(allClubs);}
 }
@@ -859,15 +875,42 @@ function saveScorers(){
 function applyScore(match,gh,ga,scorers){
   if(!match)return;const{id,ctx}=match;haptic();
   if(ctx==='champ'){
-    let found=false;
+    let found=false,matchObj=null;
     S.calendar.forEach(d=>d.matches.forEach(m=>{
-      if(m.id===id){if(m.done)S.corrections.push({ts:new Date().toLocaleString('fr-FR'),desc:`${m.home} ${m.gh}–${m.ga} ${m.away} → ${m.home} ${gh}–${ga} ${m.away}`});m.done=true;m.gh=gh;m.ga=ga;m.scorers=scorers;found=true;}
+      if(m.id===id){
+        if(m.done)S.corrections.push({ts:new Date().toLocaleString('fr-FR'),desc:m.home+' '+m.gh+'-'+m.ga+' '+m.away+' -> '+m.home+' '+gh+'-'+ga+' '+m.away});
+        m.done=true;m.gh=gh;m.ga=ga;m.scorers=scorers;found=true;matchObj=m;
+      }
     }));
     if(found){
-      const el=document.getElementById('cm-'+id);if(el){el.classList.remove('score-flash');void el.offsetWidth;el.classList.add('score-flash');}
+      // Surgical DOM: replace only the changed match row — scroll position preserved
+      const el=document.getElementById('cm-'+id);
+      if(el&&matchObj){
+        const fresh=buildMatchEl(matchObj,'champ');
+        el.replaceWith(fresh);
+        const ne=document.getElementById('cm-'+id);
+        if(ne){ne.classList.remove('score-flash');void ne.offsetWidth;ne.classList.add('score-flash');}
+      }
       const diff=Math.abs(gh-ga);
-      if(diff>=5)toast('💀 Humiliation !','green');else if(gh===0&&ga===0)toast('🧠 Match de tacticiens.','green');else toast('✓ Score enregistré','green');
-      save();renderChampAll();if(S.calendar.flatMap(d=>d.matches).every(m=>m.done))champEnd();
+      if(diff>=5)toast('Humiliation !','green');
+      else if(gh===0&&ga===0)toast('Match de tacticiens.','green');
+      else toast('Score enregistre','green');
+      save();
+      // Update classement without rebuilding the full calendar DOM
+      renderChampClassement();
+      // Sync corrections badge
+      const cc=(S.corrections||[]).length;
+      const cb=document.getElementById('corr-tab-btn');
+      if(cb)cb.textContent=cc>0?'Corrections ('+cc+')':'Corrections';
+      // Auto-refresh stats tab if currently active (Bug 6)
+      const statsTab=document.getElementById('champ-tab-stats');
+      if(statsTab&&statsTab.classList.contains('active'))renderChampStats();
+      // Update progress bar
+      const allM=S.calendar.flatMap(d=>d.matches);
+      const played=allM.filter(m=>m.done).length,total=allM.length,pct=total?Math.round(played/total*100):0;
+      const prog=document.getElementById('champ-prog');
+      if(prog)prog.innerHTML='<div class="prog-label"><span>'+played+' joues</span><span>'+(total-played)+' restants</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>';
+      if(allM.every(m=>m.done))champEnd();
     }
   }else if(ctx==='ldc-g'){applyLDCGroupScore(id,gh,ga,scorers);}
   else if(ctx==='ldc-ko'){applyKOScore(id,gh,ga,scorers);}
@@ -891,26 +934,32 @@ function showMatchDetail(mid){
 
 // CHAMP END
 function champEnd(){
-  const key=S.name+'_'+new Date().toLocaleDateString('fr-FR');if(S.palmares.some(p=>p._key===key))return;
+  const key=S.name+'_'+new Date().toISOString().slice(0,10);if(S.palmares.some(p=>p._key===key))return;
   const st=getChampStats(),sorted=sortClubs(st),winner=sorted[0],wi=clubInfo(winner);
   const sm={};S.calendar.forEach(d=>d.matches.forEach(m=>{if(!m.scorers)return;m.scorers.forEach(s=>{sm[s.player]=(sm[s.player]||0)+1;});}));
   const ts=Object.entries(sm).sort((a,b)=>b[1]-a[1])[0];
   const fs=sorted.map(name=>({name,...st[name],info:clubInfo(name)}));
-  S.palmares.push({_key:key,mode:'champ',name:S.name,winner,winnerPlayer:wi.playerName,winnerColor:wi.playerColor,date:new Date().toLocaleDateString('fr-FR'),topScorer:ts?{name:ts[0],goals:ts[1]}:null,stats:{pts:st[winner].pts,bp:st[winner].bp,bc:st[winner].bc},finalStandings:fs});
+  const isoDate=new Date().toISOString().slice(0,10);
+  S.palmares.push({_key:S.name+'_'+isoDate,mode:'champ',name:S.name,winner,winnerPlayer:wi.playerName,winnerColor:wi.playerColor,date:isoDate,topScorer:ts?{name:ts[0],goals:ts[1]}:null,stats:{pts:st[winner].pts,bp:st[winner].bp,bc:st[winner].bc},finalStandings:fs});
   save();showEndScreen(sorted,st,'champ');
 }
 function showEndScreen(sorted,st,mode){
   const w=sorted[0],wi=clubInfo(w);const isLdc=mode==='ldc';
-  const inv=st&&st[w]&&st[w].d===0&&st[w].j>0?' — Invaincu. Incontesté. Inoubliable.':'';
-  document.getElementById('end-title').innerHTML=`<span style="color:${wi.playerColor}">${w}</span> ${isLdc?'CHAMPION D\'EUROPE !':'CHAMPION !'}`;
-  document.getElementById('end-sub').textContent=`${isLdc?'La gloire européenne.':'Le trône est pris.'} Félicitations ${wi.playerName} !${inv}`;
-  if(sorted.length>=3&&st){
-    const pl=[sorted[1],sorted[0],sorted[2]],cl=['pod-2','pod-1','pod-3'],nu=['2ᵉ','1ᵉʳ','3ᵉ'];
-    document.getElementById('end-podium').innerHTML=pl.map((name,i)=>{if(!name)return'';const ni=clubInfo(name);return`<div class="podium-place ${cl[i]}" id="ppod-${i}"><div class="p-pos">${nu[i]}</div><div class="p-club" style="color:${ni.playerColor}">${name}</div><div class="p-pts">${st[name]?st[name].pts+' pts':''}</div></div>`;}).join('');
+  const inv=st&&st[w]&&st[w].d===0&&st[w].j>0?' Invaincu.':'';
+  document.getElementById('end-title').innerHTML='<span style="color:'+wi.playerColor+'">'+w+'</span> '+(isLdc?"CHAMPION D'EUROPE !":'CHAMPION !');
+  document.getElementById('end-sub').textContent=(isLdc?'La gloire europeenne.':'Le trone est pris.')+' Felicitations '+wi.playerName+'!'+inv;
+  if(sorted.length>=3){
+    const pl=[sorted[1],sorted[0],sorted[2]],cl=['pod-2','pod-1','pod-3'],nu=['2e','1er','3e'];
+    document.getElementById('end-podium').innerHTML=pl.map((name,i)=>{
+      if(!name)return'';
+      const ni=clubInfo(name);
+      const pts=st&&st[name]?st[name].pts+' pts':'';
+      return'<div class="podium-place '+cl[i]+'" id="ppod-'+i+'"><div class="p-pos">'+nu[i]+'</div><div class="p-club" style="color:'+ni.playerColor+'">'+name+'</div><div class="p-pts">'+pts+'</div></div>';
+    }).join('');
   }else{document.getElementById('end-podium').innerHTML='';}
   if(st&&sorted.length){
-    const tb=sorted.map((name,i)=>{const s=st[name],d=s.diff,ds=d>0?'+'+d:String(d),ni=clubInfo(name);return`<tr class="${i===0?'row-1st':''}"><td class="pos-cell tl">${i+1}</td><td class="tl"><span style="color:${ni.playerColor};font-weight:700">${name}</span></td><td class="pts-cell">${s.pts}</td><td>${s.j}</td><td>${s.v}</td><td>${s.n}</td><td>${s.d}</td><td>${s.bp}</td><td>${s.bc}</td><td class="${d>0?'diff-pos':d<0?'diff-neg':''}">${ds}</td></tr>`;}).join('');
-    document.getElementById('end-final-table').innerHTML=`<div class="card" style="padding:0;overflow:hidden"><div style="padding:12px;border-bottom:1px solid var(--border)"><div class="card-title" style="margin:0">Classement final</div></div><div class="tbl-wrap"><table><thead><tr><th class="tl">#</th><th class="tl">Équipe</th><th>Pts</th><th>J</th><th>V</th><th>N</th><th>D</th><th>BP</th><th>BC</th><th>+/-</th></tr></thead><tbody>${tb}</tbody></table></div></div>`;
+    const tb=sorted.map((name,i)=>{const s=st[name],d=s.diff,ds=d>0?'+'+d:String(d),ni=clubInfo(name);return'<tr class="'+(i===0?'row-1st':'')+'"><td class="pos-cell tl">'+(i+1)+'</td><td class="tl"><span style="color:'+ni.playerColor+';font-weight:700">'+name+'</span></td><td class="pts-cell">'+s.pts+'</td><td>'+s.j+'</td><td>'+s.v+'</td><td>'+s.n+'</td><td>'+s.d+'</td><td>'+s.bp+'</td><td>'+s.bc+'</td><td class="'+(d>0?'diff-pos':d<0?'diff-neg':'')+'">'+ds+'</td></tr>';}).join('');
+    document.getElementById('end-final-table').innerHTML='<div class="card" style="padding:0;overflow:hidden"><div style="padding:12px;border-bottom:1px solid var(--border)"><div class="card-title" style="margin:0">Classement final</div></div><div class="tbl-wrap"><table><thead><tr><th class="tl">#</th><th class="tl">Equipe</th><th>Pts</th><th>J</th><th>V</th><th>N</th><th>D</th><th>BP</th><th>BC</th><th>+/-</th></tr></thead><tbody>'+tb+'</tbody></table></div></div>';
   }else{document.getElementById('end-final-table').innerHTML='';}
   showScreen('screen-end');
   setTimeout(()=>{
@@ -1035,10 +1084,13 @@ function refreshManualGroups(){
 function removeFromManualGroup(gi,clubName){
   const allClubs=getAllClubs();_manualGroups[gi].clubs=_manualGroups[gi].clubs.filter(c=>c.name!==clubName);refreshManualGroups();
   const club=allClubs.find(c=>c.name===clubName);if(!club)return;
-  const ci=clubInfo(clubName);const pool=document.getElementById('manual-pool');
+  const pool=document.getElementById('manual-pool');if(!pool)return;
+  // Guard against double-add on rapid tap
+  if(pool.querySelector('[data-club="'+clubName+'"]'))return;
+  const ci=clubInfo(clubName);
   const div=document.createElement('div');div.className='manual-club-item';div.draggable=true;div.dataset.club=clubName;div.dataset.player=club.playerId;
-  div.setAttribute('ondragstart','manualDragStart(event)');div.style.borderLeft=`3px solid ${ci.playerColor}`;
-  div.innerHTML=`<span class="player-dot" style="background:${ci.playerColor}"></span>${clubName}<span style="font-size:10px;color:var(--text3);margin-left:auto">${ci.playerName}</span>`;
+  div.setAttribute('ondragstart','manualDragStart(event)');div.style.borderLeft='3px solid '+ci.playerColor;
+  div.innerHTML='<span class="player-dot" style="background:'+ci.playerColor+'"></span>'+clubName+'<span style="font-size:10px;color:var(--text3);margin-left:auto">'+ci.playerName+'</span>';
   pool.appendChild(div);
 }
 function confirmManualDraw(){
@@ -1136,8 +1188,14 @@ function renderLDCResults(){
   });body.innerHTML=html;
 }
 function applyLDCGroupScore(mid,gh,ga,scorers){
-  let found=false;S.ldc.groups.forEach(g=>g.matches.forEach(m=>{if(m.id===mid){m.done=true;m.gh=gh;m.ga=ga;m.scorers=scorers;found=true;}}));
-  if(found){save();toast('✓ Score enregistré','green');renderLDCGroups();renderLDCCal();updateQualifyBtn();}
+  let found=false,matchObj=null;
+  S.ldc.groups.forEach(g=>g.matches.forEach(m=>{if(m.id===mid){m.done=true;m.gh=gh;m.ga=ga;m.scorers=scorers;found=true;matchObj=m;}}));
+  if(found){
+    // Flash feedback (same as champ)
+    const el=document.getElementById('cm-'+mid);
+    if(el&&matchObj){const fresh=buildMatchEl(matchObj,'ldc-g');el.replaceWith(fresh);const ne=document.getElementById('cm-'+mid);if(ne){ne.classList.remove('score-flash');void ne.offsetWidth;ne.classList.add('score-flash');}}
+    save();toast('Score enregistre','green');renderLDCGroups();renderLDCCal();updateQualifyBtn();
+  }
 }
 function editLDCMatch(mid,ctx){
   if(ctx==='ldc-g'){S.ldc.groups.forEach(g=>g.matches.forEach(m=>{if(m.id===mid){m.done=false;m.gh=null;m.ga=null;m.scorers=[];}}));save();renderLDCCal();renderLDCGroups();toast('Match remis en attente','green');}
@@ -1169,9 +1227,15 @@ function buildKORound(qualifiers,isFirst=false){
   if(isFirst){
     const firsts=qualifiers.filter(q=>q.rank===1),seconds=qualifiers.filter(q=>q.rank===2);
     const sf=shuffle([...firsts]),ss=shuffle([...seconds]);
-    for(let i=0;i<sf.length;i++){let ji=ss.findIndex(s=>s.group!==sf[i].group);if(ji===-1)ji=0;const opp=ss.splice(ji,1)[0];const m1id=newMid();
+    let sameGroupFallback=false;
+    for(let i=0;i<sf.length;i++){
+      let ji=ss.findIndex(s=>s.group!==sf[i].group);
+      if(ji===-1){ji=0;sameGroupFallback=true;} // constraint violation — unavoidable
+      const opp=ss.splice(ji,1)[0];const m1id=newMid();
       pairs.push({id:m1id,home:sf[i].club,away:opp.club,leg:1,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
-      if(S.options.elim===2)pairs.push({id:newMid(),home:opp.club,away:sf[i].club,leg:2,pairedWith:m1id,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});}
+      if(S.options.elim===2)pairs.push({id:newMid(),home:opp.club,away:sf[i].club,leg:2,pairedWith:m1id,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
+    }
+    if(sameGroupFallback)setTimeout(()=>toast('Tirage : meme groupe inevitable pour un match.','red'),800);
   }else{
     const sh=shuffle([...qualifiers]);
     for(let i=0;i<sh.length;i+=2){if(i+1>=sh.length)break;const m1id=newMid();
@@ -1261,9 +1325,30 @@ function renderKOMatches(){
   });
 }
 function ldcEnd(winner){
-  const key=S.name+'_ldc_'+new Date().toLocaleDateString('fr-FR');if(S.palmares.some(p=>p._key===key))return;
-  const wi=clubInfo(winner);S.palmares.push({_key:key,mode:'ldc',name:S.name,winner,winnerPlayer:wi.playerName,winnerColor:wi.playerColor,date:new Date().toLocaleDateString('fr-FR'),topScorer:null,stats:{},finalStandings:null});
-  save();showEndScreen([winner],null,'ldc');setTimeout(()=>toast(`🏆 ${winner} sur le toit de l'Europe !`,'gold'),600);
+  const key=S.name+'_ldc_'+new Date().toISOString().slice(0,10);if(S.palmares.some(p=>p._key===key))return;
+  const wi=clubInfo(winner);
+  const isoDate=new Date().toISOString().slice(0,10);
+  S.palmares.push({_key:S.name+'_ldc_'+isoDate,mode:'ldc',name:S.name,winner,winnerPlayer:wi.playerName,winnerColor:wi.playerColor,date:isoDate,topScorer:null,stats:{},finalStandings:null});
+  // Build podium from KO rounds: finalist = loser of final, 3rd = losers of semis
+  const podiumSorted=buildLDCPodium(winner);
+  save();showEndScreen(podiumSorted,null,'ldc');setTimeout(()=>toast(winner+' sur le toit de l\'Europe !','gold'),600);
+}
+function buildLDCPodium(winner){
+  const rounds=S.ldc.koRounds;if(!rounds||!rounds.length)return[winner];
+  const finalRound=rounds[rounds.length-1];
+  const finalTies=getRoundTies(finalRound);
+  let finalist=null;
+  if(finalTies.length){const ft=finalTies[0];finalist=ft.home===winner?ft.away:ft.home;}
+  const thirdPlaces=[];
+  if(rounds.length>=2){
+    const semiRound=rounds[rounds.length-2];
+    getRoundTies(semiRound).forEach(t=>{if(t.winner&&t.winner!==winner&&t.winner!==finalist)thirdPlaces.push(t.winner);});
+  }
+  // sorted: [winner, finalist, 3rd...]
+  const result=[winner];
+  if(finalist)result.push(finalist);
+  thirdPlaces.forEach(t=>{if(!result.includes(t))result.push(t);});
+  return result;
 }
 // FIXED updateLDCPhaseBar — no double render
 function updateLDCPhaseBar(){
