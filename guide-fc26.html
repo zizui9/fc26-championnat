@@ -627,6 +627,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size
 </div>
 <div class="filters" style="margin-top:12px">
   <button class="filt on" onclick="filterMoves('all',this)">Tous</button>
+  <button class="filt" onclick="filterMoves('1',this)">1★</button>
   <button class="filt" onclick="filterMoves('2',this)">2★</button>
   <button class="filt" onclick="filterMoves('3',this)">3★</button>
   <button class="filt" onclick="filterMoves('4',this)">4★</button>
@@ -777,33 +778,62 @@ const STAR_COLORS={
   5:{bg:"rgba(250,238,218,.1)",border:"#FAC775",text:"#FAC775"},
 };
 const ALL_MOVES=[
+  // ★ 1 ETOILE
+  {name:"Directional Nutmeg",stars:1,type:"press",buttons:["L1","R1"],desc:"Petit pont directionnel",tip:"Oriente RS vers l'espace a cote du defenseur. Tres risque.",stepsRel:null},
+  {name:"Open Up Fake Shot G.",stars:1,type:"press",buttons:["L1","Cercle/Carre","X"],desc:"Feinte de frappe ouverte gauche",tip:"L1 + fausse frappe + LS diag haut-gauche.",stepsRel:null},
+  {name:"Open Up Fake Shot D.",stars:1,type:"press",buttons:["L1","Cercle/Carre","X"],desc:"Feinte de frappe ouverte droite",tip:"L1 + fausse frappe + LS diag haut-droite.",stepsRel:null},
+  {name:"Flick Up",stars:1,type:"press",buttons:["R3"],desc:"Leve le ballon en l'air",tip:"Appuie sur le stick droit (R3). Ideal avant un geste aerien.",stepsRel:null},
+  {name:"First Time Feint Turn",stars:1,type:"press",buttons:["L1","R1"],desc:"Feinte 1ere touche + demi-tour",tip:"L1+R1 + LS vers l'arriere. A utiliser a la reception du ballon.",stepsRel:null},
+  // ★★ 2 ETOILES
   {name:"Body Feint Droite",stars:2,type:"flick",desc:"Feinte du corps vers la droite",tip:"FLICK RAPIDE RS vers la droite du joueur. Si ball roll sort = tu maintiens trop.",zone:{relFrom:68,relTo:112},stepsRel:null},
   {name:"Body Feint Gauche",stars:2,type:"flick",desc:"Feinte du corps vers la gauche",tip:"FLICK RAPIDE RS vers la gauche du joueur.",zone:{relFrom:248,relTo:292},stepsRel:null},
-  {name:"Ball Roll Droite",stars:2,type:"hold",desc:"Roulade du ballon vers la droite",tip:"MAINTENIR RS vers la droite du joueur (zone 55-125°). PAS de diagonale !",zone:{relFrom:55,relTo:125},stepsRel:null},
-  {name:"Ball Roll Gauche",stars:2,type:"hold",desc:"Roulade du ballon vers la gauche",tip:"MAINTENIR RS vers la gauche du joueur (zone 235-305°). PAS de diagonale !",zone:{relFrom:235,relTo:305},stepsRel:null},
-  {name:"Stepover Droite",stars:2,type:"roll",desc:"Passement de jambe droite — demi-cercle avant→droite",tip:"Demi-cercle RS avant vers droite du joueur. Enchaîne R2.",stepsRel:[0,90]},
-  {name:"Stepover Gauche",stars:2,type:"roll",desc:"Passement de jambe gauche — demi-cercle avant→gauche",tip:"Demi-cercle RS avant vers gauche du joueur.",stepsRel:[0,270]},
-  {name:"Feint Forward & Turn",stars:2,type:"flick",desc:"Feinte avant + demi-tour",tip:"Double flick RS vers l'arrière du joueur.",zone:{relFrom:158,relTo:202},stepsRel:null},
-  {name:"Drag Back",stars:2,type:"press",desc:"Tire le ballon en arrière — L1+R1 + LS arrière",tip:"L1+R1 + LS vers l'arrière du joueur.",stepsRel:null},
-  {name:"Stop and Go",stars:2,type:"flick",desc:"Arrêt puis accélération — L2+RS",tip:"L2 + RS arrière puis avant du joueur.",stepsRel:[180,0]},
-  {name:"Heel to Heel",stars:3,type:"flick",desc:"Accélération talon-pointe",tip:"Flick RS avant puis arrière du joueur. Lâche R2 avant !",zone:{relFrom:-22,relTo:22},stepsRel:[0,180]},
-  {name:"Roulette Droite",stars:3,type:"roll",desc:"Rotation 270° sens horaire",tip:"RS : arrière puis droite du joueur.",stepsRel:[180,90]},
-  {name:"Roulette Gauche",stars:3,type:"roll",desc:"Rotation 270° sens anti-horaire",tip:"RS : arrière puis gauche du joueur.",stepsRel:[180,270]},
-  {name:"Fake Left & Go Right",stars:3,type:"roll",desc:"Feinte gauche, départ droite",tip:"Demi-cercle : gauche vers droite (par l'avant).",stepsRel:[270,90]},
-  {name:"Fake Right & Go Left",stars:3,type:"roll",desc:"Feinte droite, départ gauche",tip:"Demi-cercle : droite vers gauche (par l'avant).",stepsRel:[90,270]},
-  {name:"La Croqueta",stars:4,type:"hold",desc:"Glissement latéral explosif — L1+RS",tip:"L1 + maintenir RS gauche ou droite. Quasi indéfendable dans la surface.",zone:{relFrom:55,relTo:125},stepsRel:null},
-  {name:"Quick Ball Rolls",stars:4,type:"hold",desc:"Ball rolls rapides arrière",tip:"Maintenir RS arrière du joueur.",zone:{relFrom:160,relTo:200},stepsRel:null},
-  {name:"Simple Rainbow",stars:4,type:"flick",desc:"Arc-en-ciel par-dessus",tip:"Flick RS arrière puis avant.",stepsRel:[180,0]},
-  {name:"Stop & Turn Gauche",stars:4,type:"flick",desc:"Arrêt + départ gauche",tip:"Flick RS avant puis gauche.",stepsRel:[0,270]},
-  {name:"Stop & Turn Droite",stars:4,type:"flick",desc:"Arrêt + départ droite",tip:"Flick RS avant puis droite.",stepsRel:[0,90]},
-  {name:"Drag Back Spin G.",stars:4,type:"flick",desc:"Drag back + spin gauche",tip:"Flick RS arrière puis gauche.",stepsRel:[180,270]},
-  {name:"Drag Back Spin D.",stars:4,type:"flick",desc:"Drag back + spin droite",tip:"Flick RS arrière puis droite.",stepsRel:[180,90]},
-  {name:"Elastico",stars:5,type:"roll",desc:"Flip flap légendaire — le move le plus rapide",tip:"Demi-cercle : droite vers gauche (par le bas).",stepsRel:[90,270]},
+  {name:"Ball Roll Droite",stars:2,type:"hold",desc:"Roulade du ballon vers la droite",tip:"MAINTENIR RS vers la droite du joueur (zone 55-125deg). PAS de diagonale !",zone:{relFrom:55,relTo:125},stepsRel:null},
+  {name:"Ball Roll Gauche",stars:2,type:"hold",desc:"Roulade du ballon vers la gauche",tip:"MAINTENIR RS vers la gauche du joueur (zone 235-305deg). PAS de diagonale !",zone:{relFrom:235,relTo:305},stepsRel:null},
+  {name:"Stepover Droite",stars:2,type:"roll",desc:"Passement de jambe droite — demi-cercle avant vers droite",tip:"Demi-cercle RS avant vers droite du joueur. Enchaine R2.",stepsRel:[0,90]},
+  {name:"Stepover Gauche",stars:2,type:"roll",desc:"Passement de jambe gauche — demi-cercle avant vers gauche",tip:"Demi-cercle RS avant vers gauche du joueur.",stepsRel:[0,270]},
+  {name:"Reverse Stepover D.",stars:2,type:"roll",desc:"Stepover inverse droite — droite vers avant",tip:"Demi-cercle : droite vers avant du joueur.",stepsRel:[90,0]},
+  {name:"Reverse Stepover G.",stars:2,type:"roll",desc:"Stepover inverse gauche — gauche vers avant",tip:"Demi-cercle : gauche vers avant du joueur.",stepsRel:[270,0]},
+  {name:"Feint Forward & Turn",stars:2,type:"flick",desc:"Feinte avant + demi-tour",tip:"Double flick RS vers l'arriere du joueur.",zone:{relFrom:158,relTo:202},stepsRel:null},
+  {name:"Drag Back",stars:2,type:"press",buttons:["L1","R1"],desc:"Tire le ballon en arriere — L1+R1 + LS arriere",tip:"L1+R1 + LS vers l'arriere du joueur. Defenseur depasse par inertie.",stepsRel:null},
+  {name:"Big Feint (FC25)",stars:2,type:"flick",buttons:["L2"],desc:"Grande feinte exageree — L2+RS",tip:"L2 + flick RS gauche puis droite.",stepsRel:[270,90]},
+  {name:"Stop and Go (FC25)",stars:2,type:"flick",buttons:["L2"],desc:"Arret puis acceleration — L2+RS",tip:"L2 + RS arriere puis avant du joueur.",stepsRel:[180,0]},
+  // ★★★ 3 ETOILES
+  {name:"Heel to Heel",stars:3,type:"flick",desc:"Acceleration talon-pointe",tip:"Flick RS avant puis arriere du joueur. Lache R2 avant !",zone:{relFrom:-22,relTo:22},stepsRel:[0,180]},
+  {name:"Roulette Droite",stars:3,type:"roll",desc:"Rotation 270deg sens horaire",tip:"RS : arriere puis droite du joueur.",stepsRel:[180,90]},
+  {name:"Roulette Gauche",stars:3,type:"roll",desc:"Rotation 270deg sens anti-horaire",tip:"RS : arriere puis gauche du joueur.",stepsRel:[180,270]},
+  {name:"Fake Left & Go Right",stars:3,type:"roll",desc:"Feinte gauche, depart droite",tip:"Demi-cercle : gauche vers droite (par l'avant).",stepsRel:[270,90]},
+  {name:"Fake Right & Go Left",stars:3,type:"roll",desc:"Feinte droite, depart gauche",tip:"Demi-cercle : droite vers gauche (par l'avant).",stepsRel:[90,270]},
+  {name:"Heel Chop Gauche",stars:3,type:"press",buttons:["L2","Cercle/Carre","X"],desc:"Talonnade coupee gauche (en courant)",tip:"L2 + fake shot + LS gauche.",stepsRel:null},
+  {name:"Heel Chop Droite",stars:3,type:"press",buttons:["L2","Cercle/Carre","X"],desc:"Talonnade coupee droite (en courant)",tip:"L2 + fake shot + LS droite.",stepsRel:null},
+  {name:"Stutter Feint",stars:3,type:"flick",buttons:["L2"],desc:"Feinte hesitante — L2+RS",tip:"L2 + RS gauche puis droite.",stepsRel:[270,90]},
+  // ★★★★ 4 ETOILES
+  {name:"Heel to Heel (4*)",stars:4,type:"flick",desc:"Heel to heel version rapide",tip:"Meme input que 3* mais animation plus rapide.",stepsRel:[0,180]},
+  {name:"Simple Rainbow",stars:4,type:"flick",desc:"Arc-en-ciel par-dessus",tip:"Flick RS arriere puis avant.",stepsRel:[180,0]},
+  {name:"Stop & Turn Gauche",stars:4,type:"flick",desc:"Arret + depart gauche",tip:"Flick RS avant puis gauche.",stepsRel:[0,270]},
+  {name:"Stop & Turn Droite",stars:4,type:"flick",desc:"Arret + depart droite",tip:"Flick RS avant puis droite.",stepsRel:[0,90]},
+  {name:"Spin Gauche",stars:4,type:"roll",buttons:["L2","R1"],desc:"Spin rapide gauche — L2+R1",tip:"L2+R1 + rotation anti-horaire.",stepsRel:[180,270]},
+  {name:"Spin Droite",stars:4,type:"roll",buttons:["L2","R1"],desc:"Spin rapide droite — L2+R1",tip:"L2+R1 + rotation horaire.",stepsRel:[180,90]},
+  {name:"Drag Back Spin G.",stars:4,type:"flick",desc:"Drag back + spin gauche",tip:"Flick RS arriere puis gauche.",stepsRel:[180,270]},
+  {name:"Drag Back Spin D.",stars:4,type:"flick",desc:"Drag back + spin droite",tip:"Flick RS arriere puis droite.",stepsRel:[180,90]},
+  {name:"La Croqueta",stars:4,type:"hold",buttons:["L1"],desc:"Glissement lateral explosif — L1+RS",tip:"L1 + maintenir RS gauche ou droite. Quasi indefendable dans la surface.",zone:{relFrom:55,relTo:125},stepsRel:null},
+  {name:"Quick Ball Rolls",stars:4,type:"hold",desc:"Ball rolls rapides arriere",tip:"Maintenir RS arriere du joueur.",zone:{relFrom:160,relTo:200},stepsRel:null},
+  {name:"Lane Change G.",stars:4,type:"hold",buttons:["L1"],desc:"Deplacement lateral gauche — L1+RS gauche",tip:"L1 + maintenir RS gauche.",zone:{relFrom:235,relTo:305},stepsRel:null},
+  {name:"Lane Change D.",stars:4,type:"hold",buttons:["L1"],desc:"Deplacement lateral droite — L1+RS droite",tip:"L1 + maintenir RS droite.",zone:{relFrom:55,relTo:125},stepsRel:null},
+  {name:"Three Touch Roulette G.",stars:4,type:"flick",buttons:["L1"],desc:"Roulette 3 touches gauche",tip:"L1 + flick RS arriere puis gauche.",stepsRel:[180,270]},
+  {name:"Three Touch Roulette D.",stars:4,type:"flick",buttons:["L1"],desc:"Roulette 3 touches droite",tip:"L1 + flick RS arriere puis droite.",stepsRel:[180,90]},
+  // ★★★★★ 5 ETOILES
+  {name:"Elastico",stars:5,type:"roll",desc:"Flip flap legendaire — le move le plus rapide",tip:"Demi-cercle : droite vers gauche (par le bas).",stepsRel:[90,270]},
   {name:"Reverse Elastico",stars:5,type:"roll",desc:"Elastico inverse",tip:"Demi-cercle : gauche vers droite (par le bas).",stepsRel:[270,90]},
-  {name:"Advanced Rainbow",stars:5,type:"flick",desc:"Arc-en-ciel avancé",tip:"Flick arrière, maintenir avant, flick avant.",stepsRel:[180,0,0]},
+  {name:"Advanced Rainbow",stars:5,type:"flick",desc:"Arc-en-ciel avance — 3 inputs",tip:"Flick arriere, maintenir avant, flick avant.",stepsRel:[180,0,0]},
+  {name:"Turn & Spin G.",stars:5,type:"flick",desc:"Demi-tour + spin gauche",tip:"Flick RS avant puis gauche.",stepsRel:[0,270]},
+  {name:"Turn & Spin D.",stars:5,type:"flick",desc:"Demi-tour + spin droite",tip:"Flick RS avant puis droite.",stepsRel:[0,90]},
   {name:"Ball Roll Fake G.",stars:5,type:"hold",desc:"Feinte ball roll gauche",tip:"Maintenir RS gauche puis flick droite.",stepsRel:[270,90]},
   {name:"Ball Roll Fake D.",stars:5,type:"hold",desc:"Feinte ball roll droite",tip:"Maintenir RS droite puis flick gauche.",stepsRel:[90,270]},
   {name:"Flick Over",stars:5,type:"hold",desc:"Lob par-dessus (maintenir RS avant)",tip:"Maintenir RS vers l'avant du joueur.",zone:{relFrom:-20,relTo:20},stepsRel:null},
+  {name:"Flair Rainbow",stars:5,type:"flick",buttons:["L1"],desc:"Rainbow style — L1+RS",tip:"L1 + flick RS arriere puis avant.",stepsRel:[180,0]},
+  {name:"Tornado Spin",stars:5,type:"flick",buttons:["L2","R1"],desc:"Tornade rotation — L2+R1+RS",tip:"L2+R1 + flick RS avant puis gauche.",stepsRel:[0,270]},
+  {name:"Elastico Chop G.",stars:5,type:"roll",buttons:["L2","R1"],desc:"Elastico coupe gauche — L2+R1",tip:"L2+R1 + demi-cercle droite vers gauche.",stepsRel:[90,270]},
+  {name:"Elastico Chop D.",stars:5,type:"roll",buttons:["L2","R1"],desc:"Elastico coupe droite — L2+R1",tip:"L2+R1 + demi-cercle gauche vers droite.",stepsRel:[270,90]},
 ];
 
 // ============================================================
