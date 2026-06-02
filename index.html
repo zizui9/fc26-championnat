@@ -1299,26 +1299,74 @@ function goKO(){
   document.getElementById('ldc-groups-screen').style.display='none';document.getElementById('ldc-ko-screen').style.display='block';
   updateLDCPhaseBar();renderBracket();renderKOMatches();toast('La gloire européenne se joue maintenant !','gold');
 }
+function getPlayerOfClub(clubName){
+  // Returns the playerId of the owner of a club — used for same-player conflict detection
+  const ci=clubInfo(clubName);return ci?ci.playerId:null;
+}
 function buildKORound(qualifiers,isFirst=false){
   let pairs=[];
+  let samePlayerFallback=false;
+  let sameGroupFallback=false;
+
   if(isFirst){
     const firsts=qualifiers.filter(q=>q.rank===1),seconds=qualifiers.filter(q=>q.rank===2);
     const sf=shuffle([...firsts]),ss=shuffle([...seconds]);
-    let sameGroupFallback=false;
     for(let i=0;i<sf.length;i++){
-      let ji=ss.findIndex(s=>s.group!==sf[i].group);
-      if(ji===-1){ji=0;sameGroupFallback=true;} // constraint violation — unavoidable
+      // Priority: 1) different group AND different player, 2) different group, 3) different player, 4) fallback
+      let ji=ss.findIndex(s=>s.group!==sf[i].group&&getPlayerOfClub(s.club)!==getPlayerOfClub(sf[i].club));
+      if(ji===-1){
+        ji=ss.findIndex(s=>s.group!==sf[i].group);
+        if(ji!==-1)samePlayerFallback=true;
+      }
+      if(ji===-1){
+        ji=ss.findIndex(s=>getPlayerOfClub(s.club)!==getPlayerOfClub(sf[i].club));
+        if(ji!==-1){sameGroupFallback=true;}
+      }
+      if(ji===-1){ji=0;sameGroupFallback=true;samePlayerFallback=true;}
       const opp=ss.splice(ji,1)[0];const m1id=newMid();
       pairs.push({id:m1id,home:sf[i].club,away:opp.club,leg:1,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
       if(S.options.elim===2)pairs.push({id:newMid(),home:opp.club,away:sf[i].club,leg:2,pairedWith:m1id,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
     }
-    if(sameGroupFallback)setTimeout(()=>toast('Tirage : meme groupe inevitable pour un match.','red'),800);
   }else{
-    const sh=shuffle([...qualifiers]);
-    for(let i=0;i<sh.length;i+=2){if(i+1>=sh.length)break;const m1id=newMid();
-      pairs.push({id:m1id,home:sh[i].club,away:sh[i+1].club,leg:1,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
-      if(S.options.elim===2)pairs.push({id:newMid(),home:sh[i+1].club,away:sh[i].club,leg:2,pairedWith:m1id,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});}
-  }return pairs;
+    // Subsequent rounds — shuffle and avoid same-player matchup (500 attempts)
+    const clubs=qualifiers.map(q=>q.club);
+    let placed=false,attempts=0;
+    while(!placed&&attempts<500){
+      attempts++;
+      const sh=shuffle([...clubs]);
+      let ok=true;
+      for(let i=0;i<sh.length;i+=2){
+        if(i+1>=sh.length)break;
+        if(getPlayerOfClub(sh[i])===getPlayerOfClub(sh[i+1])&&sh[i]!==sh[i+1]){ok=false;break;}
+      }
+      if(ok){
+        for(let i=0;i<sh.length;i+=2){
+          if(i+1>=sh.length)break;
+          const m1id=newMid();
+          pairs.push({id:m1id,home:sh[i],away:sh[i+1],leg:1,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
+          if(S.options.elim===2)pairs.push({id:newMid(),home:sh[i+1],away:sh[i],leg:2,pairedWith:m1id,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
+        }
+        placed=true;
+      }
+    }
+    if(!placed){
+      // Unavoidable same-player matchup — force it and warn
+      samePlayerFallback=true;
+      const sh=shuffle([...clubs]);
+      for(let i=0;i<sh.length;i+=2){
+        if(i+1>=sh.length)break;
+        const m1id=newMid();
+        pairs.push({id:m1id,home:sh[i],away:sh[i+1],leg:1,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
+        if(S.options.elim===2)pairs.push({id:newMid(),home:sh[i+1],away:sh[i],leg:2,pairedWith:m1id,done:false,gh:null,ga:null,scorers:[],winner:null,aetGh:null,aetGa:null});
+      }
+    }
+  }
+
+  // Warnings
+  if(samePlayerFallback)setTimeout(()=>toast('Attention : deux clubs du meme joueur se rencontrent (inévitable).','red'),900);
+  else if(sameGroupFallback)setTimeout(()=>toast('Tirage : meme groupe inevitable pour un match.','red'),800);
+
+  return pairs;
 }
 function getRoundName(n){const p=S.options.elim===2?n/2:n;if(p>=8)return'Huitièmes de finale';if(p===4)return'Quarts de finale';if(p===2)return'Demi-finales';if(p===1)return'Finale';return`Tour (${p})`;}
 function applyKOScore(mid,gh,ga,scorers){
@@ -1375,14 +1423,17 @@ function renderBracket(){
   const el=document.getElementById('ldc-bracket-body');if(!S.ldc.koRounds.length){el.innerHTML='';return;}
   let html='<div class="bracket-wrap"><div class="bracket-row">';
   S.ldc.koRounds.forEach(round=>{
-    html+=`<div class="bracket-round"><div class="round-label">${round.name}</div>`;
+    html+='<div class="bracket-round"><div class="round-label">'+round.name+'</div>';
     getRoundTies(round).forEach(({leg1,leg2,winner})=>{
-      if(!leg1)return;const hi=clubInfo(leg1.home),ai=clubInfo(leg1.away);const w=winner;
-      const sc1=leg1.done?`${leg1.gh}${leg1.aetGh!=null?' ('+leg1.aetGh+')':''}—${leg1.ga}${leg1.aetGa!=null?' ('+leg1.aetGa+')':''}`:'-';
-      const sc2=leg2&&leg2.done?`${leg2.gh}${leg2.aetGh!=null?' ('+leg2.aetGh+')':''}—${leg2.ga}${leg2.aetGa!=null?' ('+leg2.aetGa+')':''}`:leg2?'-':'';
-      html+=`<div class="bracket-match"><div class="bracket-team ${w===leg1.home?'winner':w&&w!==leg1.home?'loser':''}"><span style="color:${hi.playerColor}">${leg1.home}</span><span class="bracket-score">${sc1}</span></div><div class="bracket-team ${w===leg1.away?'winner':w&&w!==leg1.away?'loser':''}"><span style="color:${ai.playerColor}">${leg1.away}</span><span class="bracket-score">${leg2?sc2:''}</span></div>`;
-      if(leg2&&leg1.done&&leg2.done){const aggA=leg1.gh+(leg2.ga||0),aggB=leg1.ga+(leg2.gh||0);const aetTxt=leg2.aetGh!=null?` (a.p. ${leg2.aetGh}-${leg2.aetGa})`:'';html+=`<div class="bracket-agg">Agg: ${leg1.home} ${aggA}–${aggB} ${leg1.away}${aetTxt}</div>`;}
-      html+=`</div>`;
+      if(!leg1)return;
+      const hi=clubInfo(leg1.home),ai=clubInfo(leg1.away);const w=winner;
+      const samePlayer=hi.playerId&&ai.playerId&&hi.playerId===ai.playerId;
+      const sc1=leg1.done?leg1.gh+(leg1.aetGh!=null?' ('+leg1.aetGh+')':'')+'—'+leg1.ga+(leg1.aetGa!=null?' ('+leg1.aetGa+')':''):'-';
+      const sc2=leg2&&leg2.done?leg2.gh+(leg2.aetGh!=null?' ('+leg2.aetGh+')':'')+'—'+leg2.ga+(leg2.aetGa!=null?' ('+leg2.aetGa+')':''):leg2?'-':'';
+      const spBadge=samePlayer?'<div style="font-size:10px;font-weight:700;background:var(--red-dim);color:var(--red);border-top:1px dashed var(--red);padding:3px 10px;text-align:center">⚠ Meme joueur ('+hi.playerName+')</div>':'';
+      html+='<div class="bracket-match"><div class="bracket-team '+(w===leg1.home?'winner':w&&w!==leg1.home?'loser':'')+'"><span style="color:'+hi.playerColor+'">'+leg1.home+'</span><span class="bracket-score">'+sc1+'</span></div><div class="bracket-team '+(w===leg1.away?'winner':w&&w!==leg1.away?'loser':'')+'"><span style="color:'+ai.playerColor+'">'+leg1.away+'</span><span class="bracket-score">'+(leg2?sc2:'')+'</span></div>';
+      if(leg2&&leg1.done&&leg2.done){const aggA=leg1.gh+(leg2.ga||0),aggB=leg1.ga+(leg2.gh||0);const aetTxt=leg2.aetGh!=null?' (a.p. '+leg2.aetGh+'-'+leg2.aetGa+')':'';html+='<div class="bracket-agg">Agg: '+leg1.home+' '+aggA+'–'+aggB+' '+leg1.away+aetTxt+'</div>';}
+      html+=spBadge+'</div>';
     });html+='</div>';
   });html+='</div></div>';el.innerHTML=html;
 }
@@ -1391,12 +1442,23 @@ function renderKOMatches(){
   S.ldc.koRounds.forEach(round=>{
     const div=document.createElement('div');div.className='cal-day';
     const rid='kob-'+round.name.replace(/[^a-z0-9]/gi,'');
-    div.innerHTML=`<div class="cal-day-hdr"><span class="cal-day-title">${round.name}</span><span style="font-size:11px;color:var(--text3)">${round.matches.filter(m=>m.done).length}/${round.matches.length}</span></div><div class="cal-body" id="${rid}"></div>`;
+    div.innerHTML='<div class="cal-day-hdr"><span class="cal-day-title">'+round.name+'</span><span style="font-size:11px;color:var(--text3)">'+round.matches.filter(m=>m.done).length+'/'+round.matches.length+'</span></div><div class="cal-body" id="'+rid+'"></div>';
     el.appendChild(div);const cb=document.getElementById(rid);if(!cb)return;
     round.matches.forEach(m=>{
-      const hi=clubInfo(m.home),ai=clubInfo(m.away);const md=document.createElement('div');md.className='cal-match';
-      if(m.done){const sc=m.aetGh!=null?`${m.gh} (${m.aetGh}) — ${m.ga} (${m.aetGa})`:`${m.gh} — ${m.ga}`;const wl=m.winner?`<span class="qual-badge">✓ ${m.winner}</span>`:'';md.innerHTML=`<span class="home" style="color:${hi.playerColor}">${m.home}</span><div class="score-done" onclick="showMatchDetail('${m.id}')">${sc}</div><span class="away" style="color:${ai.playerColor}">${m.away}</span>${wl}<button class="edit-btn" onclick="askEdit('${m.id}','ldc-ko')">✏️</button>`;}
-      else{const legL=m.leg?`<span style="font-size:10px;color:var(--text3)">(M${m.leg})</span>`:'';md.innerHTML=`<span class="home" style="color:${hi.playerColor}">${m.home}</span><div class="score-pend">${legL}<input type="number" min="0" max="99" placeholder="0" id="sh-${m.id}"><span class="score-dash">—</span><input type="number" min="0" max="99" placeholder="0" id="sa-${m.id}"><button class="ok-btn" onclick="confirmScore('${m.id}','${m.home}','${m.away}','ldc-ko')">✓</button></div><span class="away" style="color:${ai.playerColor}">${m.away}</span>`;}
+      const hi=clubInfo(m.home),ai=clubInfo(m.away);
+      const samePlayer=hi.playerId&&ai.playerId&&hi.playerId===ai.playerId;
+      const md=document.createElement('div');md.className='cal-match';
+      if(samePlayer)md.style.cssText='border-left:3px solid var(--red);background:var(--red-dim)';
+      if(m.done){
+        const sc=m.aetGh!=null?m.gh+' ('+m.aetGh+') — '+m.ga+' ('+m.aetGa+')':m.gh+' — '+m.ga;
+        const wl=m.winner?'<span class="qual-badge">✓ '+m.winner+'</span>':'';
+        const spW=samePlayer?'<span style="font-size:10px;font-weight:700;color:var(--red);margin-left:4px">⚠ '+hi.playerName+'</span>':'';
+        md.innerHTML='<span class="home" style="color:'+hi.playerColor+'">'+m.home+'</span><div class="score-done" onclick="showMatchDetail(\''+m.id+'\')">'+sc+'</div><span class="away" style="color:'+ai.playerColor+'">'+m.away+'</span>'+wl+spW+'<button class="edit-btn" onclick="askEdit(\''+m.id+'\',\'ldc-ko\')">✏️</button>';
+      }else{
+        const legL=m.leg?'<span style="font-size:10px;color:var(--text3)">(M'+m.leg+')</span>':'';
+        const spW=samePlayer?'<span style="font-size:10px;font-weight:700;color:var(--red)">⚠ '+hi.playerName+'</span>':'';
+        md.innerHTML='<span class="home" style="color:'+hi.playerColor+'">'+m.home+'</span><div class="score-pend">'+legL+'<input type="number" min="0" max="99" placeholder="0" id="sh-'+m.id+'"><span class="score-dash">—</span><input type="number" min="0" max="99" placeholder="0" id="sa-'+m.id+'"><button class="ok-btn" onclick="confirmScore(\''+m.id+'\',\''+m.home+'\',\''+m.away+'\',\'ldc-ko\')">✓</button></div><span class="away" style="color:'+ai.playerColor+'">'+m.away+'</span>'+spW;
+      }
       cb.appendChild(md);
     });
   });
