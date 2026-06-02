@@ -558,7 +558,16 @@ function load(){
     if(S.ldc){
       S.ldc.groups=S.ldc.groups||[];S.ldc.koRounds=S.ldc.koRounds||[];
       S.ldc.pendingAET=S.ldc.pendingAET??null;S.ldc.phase=S.ldc.phase||'draw';
-      S.ldc.groups.forEach(g=>{g.clubs=g.clubs||[];g.matches=(g.matches||[]).map(m=>({scorers:[],done:false,...m}));});
+      S.ldc.groups.forEach(g=>{
+        g.clubs=g.clubs||[];
+        g.matches=(g.matches||[]).map(m=>({scorers:[],done:false,...m}));
+        // Migrate old matches without journee: assign by index position
+        const leg1=g.matches.filter(m=>m.leg===1);
+        const leg2=g.matches.filter(m=>m.leg===2);
+        const total=leg1.length;// 3 or 6 per aller
+        leg1.forEach((m,i)=>{if(!m.journee)m.journee=i+1;});
+        leg2.forEach((m,i)=>{if(!m.journee)m.journee=total+i+1;});
+      });
       S.ldc.koRounds.forEach(r=>{r.matches=(r.matches||[]).map(m=>({scorers:[],winner:null,aetGh:null,aetGa:null,...m}));});
     }
   }catch(e){console.warn('load',e);}
@@ -1110,11 +1119,37 @@ function finalizeDraw(groups){
   toast('Groupes confirmés ! Que le meilleur gagne 🔥','gold');
 }
 function buildGroupMatches(clubs){
+  // Build round-robin journées using the circle method
+  // Each journée: every club plays exactly once (no 3 consecutive matches for same club)
+  const n=clubs.length; // always 4 for LDC groups
+  let arr=[...clubs];
+  const journees=[];
+  for(let r=0;r<n-1;r++){
+    const j=[];
+    for(let i=0;i<n/2;i++){
+      j.push({home:arr[i].name,away:arr[n-1-i].name});
+    }
+    journees.push(j);
+    // Rotate: fix first, rotate rest
+    const last=arr.splice(n-1,1)[0];arr.splice(1,0,last);
+  }
   const matches=[];
-  for(let i=0;i<clubs.length;i++){for(let j=i+1;j<clubs.length;j++){
-    matches.push({id:newMid(),home:clubs[i].name,away:clubs[j].name,done:false,gh:null,ga:null,scorers:[],leg:1});
-    matches.push({id:newMid(),home:clubs[j].name,away:clubs[i].name,done:false,gh:null,ga:null,scorers:[],leg:2});
-  }}return matches;
+  const isAllerRetour=(S.options.elim===2);
+  // Aller legs
+  journees.forEach((j,ri)=>{
+    j.forEach(({home,away})=>{
+      matches.push({id:newMid(),home,away,done:false,gh:null,ga:null,scorers:[],leg:1,journee:ri+1});
+    });
+  });
+  // Retour legs only if aller-retour
+  if(isAllerRetour){
+    journees.forEach((j,ri)=>{
+      j.forEach(({home,away})=>{
+        matches.push({id:newMid(),home:away,away:home,done:false,gh:null,ga:null,scorers:[],leg:2,journee:journees.length+ri+1});
+      });
+    });
+  }
+  return matches;
 }
 function populateLDCResFilter(){
   const sel=document.getElementById('ldc-res-filter');if(!sel)return;
@@ -1161,20 +1196,57 @@ function renderLDCGroups(){
 function renderLDCCal(){
   const allM=S.ldc.groups.flatMap(g=>g.matches);
   const played=allM.filter(m=>m.done).length,total=allM.length,pct=total?Math.round(played/total*100):0;
-  document.getElementById('ldc-prog').innerHTML=`<div class="prog-label"><span>${played} joués</span><span>${total-played} restants</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>`;
+  document.getElementById('ldc-prog').innerHTML='<div class="prog-label"><span>'+played+' joues</span><span>'+(total-played)+' restants</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>';
   const body=document.getElementById('ldc-cal-body');body.innerHTML='';
-  const leg1=[],leg2=[];
-  S.ldc.groups.forEach(g=>g.matches.forEach(m=>{if(m.leg===1)leg1.push({...m,grp:g.name});else leg2.push({...m,grp:g.name});}));
-  [{label:'Aller (Journées 1-3)',matches:leg1,key:'aller'},{label:'Retour (Journées 4-6)',matches:leg2,key:'retour'}].forEach(({label,matches,key})=>{
-    const div=document.createElement('div');div.className='cal-day';
-    div.innerHTML=`<div class="cal-day-hdr"><span class="cal-day-title">${label}</span><span style="font-size:11px;color:var(--text3)">${matches.filter(m=>m.done).length}/${matches.length}</span></div><div class="cal-body" id="lcb-${key}"></div>`;
-    body.appendChild(div);const cb=document.getElementById('lcb-'+key);
+  const isAllerRetour=(S.options.elim===2);
+  const nbJournees=isAllerRetour?6:3;
+  // Group all matches by journee number
+  for(let j=1;j<=nbJournees;j++){
+    const journeeMatches=[];
     S.ldc.groups.forEach(g=>{
-      const gm=matches.filter(m=>m.grp===g.name);if(!gm.length)return;
-      const gdiv=document.createElement('div');gdiv.innerHTML=`<div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:5px 13px;background:var(--bg3);border-bottom:1px solid var(--border)">${g.name}</div>`;
-      gm.forEach(m=>gdiv.appendChild(buildMatchEl(m,'ldc-g')));cb.appendChild(gdiv);
+      g.matches.filter(m=>m.journee===j).forEach(m=>journeeMatches.push({...m,grp:g.name}));
     });
-  });
+    if(!journeeMatches.length)continue;
+    // Check if previous journee is fully complete (lock mechanic)
+    let prevDone=true;
+    if(j>1){
+      const prevMatches=[];
+      S.ldc.groups.forEach(g=>{g.matches.filter(m=>m.journee===j-1).forEach(m=>prevMatches.push(m));});
+      prevDone=prevMatches.every(m=>m.done);
+    }
+    const doneCnt=journeeMatches.filter(m=>m.done).length;
+    const isNext=doneCnt<journeeMatches.length&&prevDone;
+    const isLocked=!prevDone;
+    const leg=j<=3?1:2;
+    const legLabel=isAllerRetour?(leg===1?' · Aller':' · Retour'):'';
+    const div=document.createElement('div');div.className='cal-day';
+    const lockBadge=isLocked?'<span style="font-size:9px;font-weight:700;background:var(--red);color:#fff;padding:2px 8px;border-radius:8px;margin-left:8px">BLOQUEE</span>':'';
+    const nextBadge=isNext?'<span class="next-badge">PROCHAIN</span>':'';
+    div.innerHTML='<div class="cal-day-hdr"><span class="cal-day-title">Journee '+j+legLabel+nextBadge+lockBadge+'</span><span style="font-size:11px;color:var(--text3)">'+doneCnt+'/'+journeeMatches.length+'</span></div><div class="cal-body" id="lcb-j'+j+'"></div>';
+    body.appendChild(div);
+    const cb=document.getElementById('lcb-j'+j);
+    // Group by groupe within each journee
+    S.ldc.groups.forEach(g=>{
+      const gm=journeeMatches.filter(m=>m.grp===g.name);if(!gm.length)return;
+      const gdiv=document.createElement('div');
+      gdiv.innerHTML='<div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:5px 13px;background:var(--bg3);border-bottom:1px solid var(--border)">'+g.name+'</div>';
+      // Find original match objects (not the spread copies) for buildMatchEl
+      gm.forEach(mc=>{
+        const orig=g.matches.find(m=>m.id===mc.id);
+        if(!orig)return;
+        if(isLocked){
+          // Show locked match (greyed out, no input)
+          const hi=clubInfo(orig.home),ai=clubInfo(orig.away);
+          const md=document.createElement('div');md.className='cal-match';md.style.opacity='0.4';md.style.pointerEvents='none';
+          md.innerHTML='<span class="home" style="color:'+hi.playerColor+'">'+orig.home+'</span><div class="score-done" style="background:var(--bg3);color:var(--text3)">? — ?</div><span class="away" style="color:'+ai.playerColor+'">'+orig.away+'</span>';
+          gdiv.appendChild(md);
+        }else{
+          gdiv.appendChild(buildMatchEl(orig,'ldc-g'));
+        }
+      });
+      cb.appendChild(gdiv);
+    });
+  }
 }
 function renderLDCResults(){
   const f=(document.getElementById('ldc-res-filter')||{}).value||'';
@@ -1188,13 +1260,18 @@ function renderLDCResults(){
   });body.innerHTML=html;
 }
 function applyLDCGroupScore(mid,gh,ga,scorers){
-  let found=false,matchObj=null;
-  S.ldc.groups.forEach(g=>g.matches.forEach(m=>{if(m.id===mid){m.done=true;m.gh=gh;m.ga=ga;m.scorers=scorers;found=true;matchObj=m;}}));
+  let found=false,matchObj=null,grpObj=null;
+  S.ldc.groups.forEach(g=>g.matches.forEach(m=>{if(m.id===mid){m.done=true;m.gh=gh;m.ga=ga;m.scorers=scorers;found=true;matchObj=m;grpObj=g;}}));
   if(found){
-    // Flash feedback (same as champ)
+    // Flash feedback on the match element
     const el=document.getElementById('cm-'+mid);
     if(el&&matchObj){const fresh=buildMatchEl(matchObj,'ldc-g');el.replaceWith(fresh);const ne=document.getElementById('cm-'+mid);if(ne){ne.classList.remove('score-flash');void ne.offsetWidth;ne.classList.add('score-flash');}}
-    save();toast('Score enregistre','green');renderLDCGroups();renderLDCCal();updateQualifyBtn();
+    save();
+    toast('Score enregistre','green');
+    renderLDCGroups();
+    // Full calendar re-render to unlock next journee and update badges
+    renderLDCCal();
+    updateQualifyBtn();
   }
 }
 function editLDCMatch(mid,ctx){
